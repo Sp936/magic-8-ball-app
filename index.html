@@ -13,17 +13,22 @@
 input, button, select {
   padding: 10px;
   margin: 5px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
   font-size: 1rem;
 }
 
-input { width: 50%; }
+input { width: 45%; }
 
 button {
   background: #7c3aed;
   color: white;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
 }
 
 ul { list-style: none; padding: 0; }
@@ -40,20 +45,20 @@ li {
 .delete { background: transparent; color: #ff6b6b; }
 
 .ball {
-  width: 250px;
-  height: 250px;
+  width: 260px;
+  height: 260px;
   margin: 30px auto;
   background: radial-gradient(circle at 30% 30%, #444, #000);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
+  box-shadow: 0 0 60px rgba(124, 58, 237, 0.7);
 }
 
 .inner {
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 130px;
   background: #4f46e5;
   transform: rotate(45deg);
   display: flex;
@@ -62,27 +67,62 @@ li {
   border-radius: 20px;
 }
 
-#result { transform: rotate(-45deg); }
+#result {
+  transform: rotate(-45deg);
+  font-size: 1rem;
+  padding: 10px;
+}
+
+.shake { animation: shake 0.8s; }
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: gold;
+  animation: fall 1s linear forwards;
+}
+
+@keyframes fall {
+  from { transform: translateY(-100px); opacity: 1; }
+  to { transform: translateY(600px); opacity: 0; }
+}
+
+.streak {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #a78bfa;
+}
 
   </style>
 </head>
 <body>  <h1>✨ Magic 8 Ball ✨</h1>  <input id="taskInput" placeholder="Task">  <select id="energy">
-    <option value="low">💤 Low energy</option>
+    <option value="low">💤 Low</option>
     <option value="medium">⚡ Medium</option>
     <option value="high">🔥 High</option>
   </select><button onclick="addTask()">Add</button>
 
-  <ul id="taskList"></ul>  <div class="ball">
+  <ul id="taskList"></ul>  <div id="ball" class="ball">
     <div class="inner">
       <div id="result">Shake me</div>
     </div>
   </div><button onclick="decide()">🔮 Decide</button>
 
-  <script>
+  <div class="streak" id="streak">🔥 Streak: 0</div>  <script>
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let streak = parseInt(localStorage.getItem("streak")) || 0;
 
-    function saveTasks() {
+    function save() {
       localStorage.setItem("tasks", JSON.stringify(tasks));
+      localStorage.setItem("streak", streak);
     }
 
     function addTask() {
@@ -91,14 +131,15 @@ li {
 
       if (text.trim() !== "") {
         tasks.push({ text, energy });
-        saveTasks();
+        document.getElementById("taskInput").value = "";
+        save();
         render();
       }
     }
 
     function deleteTask(i) {
       tasks.splice(i, 1);
-      saveTasks();
+      save();
       render();
     }
 
@@ -108,7 +149,7 @@ li {
 
       tasks.forEach((t, i) => {
         const li = document.createElement("li");
-        li.textContent = `${t.text} (${t.energy})`;
+        li.textContent = `${emoji(t.energy)} ${t.text}`;
 
         const btn = document.createElement("button");
         btn.textContent = "✕";
@@ -118,20 +159,55 @@ li {
         li.appendChild(btn);
         list.appendChild(li);
       });
+
+      document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
+    }
+
+    function emoji(e) {
+      if (e === "low") return "💤";
+      if (e === "medium") return "⚡";
+      return "🔥";
+    }
+
+    function tinyStep(task) {
+      return "Start: " + task;
     }
 
     function decide() {
       if (tasks.length === 0) return alert("Add tasks");
 
+      const ball = document.getElementById("ball");
+      ball.classList.add("shake");
+
       const selectedEnergy = document.getElementById("energy").value;
-
       const filtered = tasks.filter(t => t.energy === selectedEnergy);
-
       const pool = filtered.length ? filtered : tasks;
 
-      const choice = pool[Math.floor(Math.random() * pool.length)];
+      setTimeout(() => {
+        const choice = pool[Math.floor(Math.random() * pool.length)];
 
-      document.getElementById("result").textContent = choice.text;
+        const finalTask = tinyStep(choice.text);
+
+        document.getElementById("result").textContent = finalTask;
+
+        streak++;
+        save();
+        render();
+
+        confetti();
+        ball.classList.remove("shake");
+      }, 800);
+    }
+
+    function confetti() {
+      for (let i = 0; i < 20; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * window.innerWidth + "px";
+        c.style.background = ["#facc15","#a78bfa","#34d399"][Math.floor(Math.random()*3)];
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 1000);
+      }
     }
 
     render();
