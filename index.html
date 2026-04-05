@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ADHD Magic 8 Ball</title>
+</head>
+<body>
+
+  <h1>Magic 8 Ball ✨</h1>
+
+  <input id="taskInput" placeholder="Add something to do">
+  <button onclick="addTask()">Add</button>
+
+  <ul id="taskList"></ul>
+
+  <button onclick="decide()">Decide for me</button>
+
+  <h2 id="result"></h2>
+
+  <script>
+    let tasks = [];
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const value = input.value.trim();
+
+      if (value !== "") {
+        tasks.push(value);
+        input.value = "";
+        renderList();
+      }
+    }
+
+    function renderList() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.textContent = task;
+        list.appendChild(li);
+      });
+    }
+
+    function decide() {
+      if (tasks.length === 0) {
+        alert("Add some options first!");
+        return;
+      }
+
+      const randomIndex = Math.floor(Math.random() * tasks.length);
+      const choice = tasks[randomIndex];
+
+      document.getElementById("result").textContent = choice;
+    }
+  </script>
+
+</body>
+</html>
