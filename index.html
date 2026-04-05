@@ -1,259 +1,291 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
-  <title>Magic 8 Ball ✨</title>
+  <title>Magic Dopamine Ball ✨</title>
+  <link rel="icon" href="file_00000000eb2c72469b0cd174bf8953a5.png">
+
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI';
       background: radial-gradient(circle at top, #0f0f1a, #000);
       color: white;
       text-align: center;
       padding: 20px;
-    }h1 {
-  font-size: 2.8rem;
-  margin-bottom: 10px;
-  background: linear-gradient(90deg, #a78bfa, #f472b6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+    }
 
-.container {
-  max-width: 500px;
-  margin: auto;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 0 40px rgba(167,139,250,0.3);
-}
+    h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(90deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-input, select {
-  width: 70%;
-  padding: 12px;
-  margin: 5px;
-  border-radius: 12px;
-  border: none;
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 40px rgba(167,139,250,0.3);
+    }
 
-button {
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(135deg, #7c3aed, #f472b6);
-  color: white;
-  cursor: pointer;
-  transition: 0.2s;
-  margin: 5px;
-}
+    input, select {
+      width: 70%;
+      padding: 12px;
+      margin: 5px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
 
-button:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 20px rgba(167,139,250,0.6);
-}
+    button {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #7c3aed, #f472b6);
+      color: white;
+      cursor: pointer;
+      margin: 5px;
+    }
 
-ul { list-style: none; padding: 0; }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
 
-li {
-  background: rgba(255,255,255,0.08);
-  margin: 5px;
-  padding: 10px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: 0.2s;
-}
+    li {
+      background: rgba(255,255,255,0.08);
+      margin: 5px;
+      padding: 10px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-li:hover {
-  background: rgba(255,255,255,0.15);
-}
+    .delete {
+      background: transparent;
+      color: #ff6b6b;
+      font-size: 1.2rem;
+    }
 
-.delete {
-  background: transparent;
-  color: #ff6b6b;
-  font-size: 1.2rem;
-}
+    .ball {
+      width: 260px;
+      height: 260px;
+      margin: 30px auto;
+      background: radial-gradient(circle at 30% 30%, #222, #000);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        inset -10px -10px 20px rgba(0,0,0,0.8),
+        inset 10px 10px 20px rgba(255,255,255,0.1),
+        0 0 60px rgba(167,139,250,0.7);
+    }
 
-.ball {
-  width: 260px;
-  height: 260px;
-  margin: 30px auto;
-  background: radial-gradient(circle at 30% 30%, #222, #000);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    inset -10px -10px 20px rgba(0,0,0,0.8),
-    inset 10px 10px 20px rgba(255,255,255,0.1),
-    0 0 60px rgba(167,139,250,0.7);
-  position: relative;
-}
+    .inner {
+      width: 140px;
+      height: 140px;
+      background: linear-gradient(135deg, #4f46e5, #a78bfa);
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+    }
 
-.inner {
-  width: 140px;
-  height: 140px;
-  background: linear-gradient(135deg, #4f46e5, #a78bfa);
-  transform: rotate(45deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
-}
+    #result {
+      transform: rotate(-45deg);
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
 
-#result {
-  transform: rotate(-45deg);
-  font-size: 1.1rem;
-  padding: 10px;
-  font-weight: bold;
-}
+    .shake {
+      animation: shake 0.8s;
+    }
 
-.shake {
-  animation: shake 0.8s;
-}
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-12px); }
+      50% { transform: translateX(12px); }
+      75% { transform: translateX(-12px); }
+      100% { transform: translateX(0); }
+    }
 
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-12px); }
-  50% { transform: translateX(12px); }
-  75% { transform: translateX(-12px); }
-  100% { transform: translateX(0); }
-}
+    .doneBtn {
+      background: #22c55e;
+      margin-top: 10px;
+      display: none;
+    }
 
-.confetti {
-  position: fixed;
-  width: 8px;
-  height: 8px;
-  animation: fall 1s linear forwards;
-}
-
-@keyframes fall {
-  from { transform: translateY(-100px); opacity: 1; }
-  to { transform: translateY(700px); opacity: 0; }
-}
-
-.streak {
-  margin-top: 10px;
-  font-size: 1.2rem;
-  color: #f472b6;
-}
-
+    .streak {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #f472b6;
+    }
   </style>
 </head>
-<body>  <h1>🔮 Decide For Me</h1>  <div class="container"><input id="taskInput" placeholder="What are your options?">
 
-<select id="energy">
-  <option value="low">💤 Low energy</option>
-  <option value="medium">⚡ Medium energy</option>
-  <option value="high">🔥 High energy</option>
-</select>
+<body>
 
-<br>
-<button onclick="addTask()">+ Add</button>
+<h1>🔮 Magic Dopamine Ball</h1>
 
-<ul id="taskList"></ul>
+<div class="container">
 
-<div id="ball" class="ball">
-  <div class="inner">
-    <div id="result">Ask me…</div>
+  <input id="taskInput" placeholder="What are your options?">
+
+  <select id="energy">
+    <option value="low">💤 Low energy</option>
+    <option value="medium">⚡ Medium energy</option>
+    <option value="high">🔥 High energy</option>
+  </select>
+
+  <br>
+  <button onclick="addTask()">+ Add</button>
+
+  <ul id="taskList"></ul>
+
+  <div id="ball" class="ball">
+    <div class="inner">
+      <div id="result">Ask me…</div>
+    </div>
   </div>
+
+  <button onclick="decide()">✨ Decide</button>
+  <button id="doneBtn" class="doneBtn" onclick="completeTask()">✅ I did it</button>
+
+  <div class="streak" id="streak">🔥 Streak: 0</div>
+
 </div>
 
-<button onclick="decide()">✨ Decide</button>
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let streak = parseInt(localStorage.getItem("streak")) || 0;
 
-<div class="streak" id="streak">🔥 Streak: 0</div>
+function save() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  localStorage.setItem("streak", streak);
+}
 
-  </div>  <script>
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    let streak = parseInt(localStorage.getItem("streak")) || 0;
+function addTask() {
+  const text = document.getElementById("taskInput").value;
+  const energy = document.getElementById("energy").value;
 
-    function save() {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      localStorage.setItem("streak", streak);
-    }
-
-    function addTask() {
-      const text = document.getElementById("taskInput").value;
-      const energy = document.getElementById("energy").value;
-
-      if (text.trim() !== "") {
-        tasks.push({ text, energy });
-        document.getElementById("taskInput").value = "";
-        save();
-        render();
-      }
-    }
-
-    function deleteTask(i) {
-      tasks.splice(i, 1);
-      save();
-      render();
-    }
-
-    function render() {
-      const list = document.getElementById("taskList");
-      list.innerHTML = "";
-
-      tasks.forEach((t, i) => {
-        const li = document.createElement("li");
-        li.textContent = `${emoji(t.energy)} ${t.text}`;
-
-        const btn = document.createElement("button");
-        btn.textContent = "✕";
-        btn.className = "delete";
-        btn.onclick = () => deleteTask(i);
-
-        li.appendChild(btn);
-        list.appendChild(li);
-      });
-
-      document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
-    }
-
-    function emoji(e) {
-      if (e === "low") return "💤";
-      if (e === "medium") return "⚡";
-      return "🔥";
-    }
-
-    function decide() {
-      if (tasks.length === 0) return alert("Add tasks");
-
-      const ball = document.getElementById("ball");
-      ball.classList.add("shake");
-
-      const selectedEnergy = document.getElementById("energy").value;
-      const filtered = tasks.filter(t => t.energy === selectedEnergy);
-      const pool = filtered.length ? filtered : tasks;
-
-      setTimeout(() => {
-        const choice = pool[Math.floor(Math.random() * pool.length)];
-
-        document.getElementById("result").textContent = "✨ " + choice.text;
-
-        streak++;
-        save();
-        render();
-
-        confetti();
-        ball.classList.remove("shake");
-      }, 800);
-    }
-
-    function confetti() {
-      for (let i = 0; i < 25; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random() * window.innerWidth + "px";
-        c.style.background = ["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 1000);
-      }
-    }
-
+  if (text.trim() !== "") {
+    tasks.push({ text, energy });
+    document.getElementById("taskInput").value = "";
+    save();
     render();
-  </script></body>
+  }
+}
+
+function deleteTask(i) {
+  tasks.splice(i, 1);
+  save();
+  render();
+}
+
+function render() {
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+
+  tasks.forEach((t, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${emoji(t.energy)} ${t.text}`;
+
+    const btn = document.createElement("button");
+    btn.textContent = "✕";
+    btn.className = "delete";
+    btn.onclick = () => deleteTask(i);
+
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
+}
+
+function emoji(e) {
+  if (e === "low") return "💤";
+  if (e === "medium") return "⚡";
+  return "🔥";
+}
+
+function tinyStep(task) {
+  return "👉 Just start: " + task;
+}
+
+function decide() {
+  if (tasks.length === 0) return alert("Add tasks");
+
+  const ball = document.getElementById("ball");
+  ball.classList.add("shake");
+
+  const selectedEnergy = document.getElementById("energy").value;
+
+  let pool = [];
+
+  if (selectedEnergy === "low") {
+    pool = tasks.filter(t => t.energy === "low");
+  }
+
+  if (selectedEnergy === "medium") {
+    pool = tasks.filter(t => t.energy === "low" || t.energy === "medium");
+  }
+
+  if (selectedEnergy === "high") {
+    pool = tasks;
+  }
+
+  if (pool.length === 0) pool = tasks;
+
+  setTimeout(() => {
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+
+    document.getElementById("result").textContent = tinyStep(choice.text);
+    document.getElementById("doneBtn").style.display = "inline-block";
+
+    ball.classList.remove("shake");
+  }, 800);
+}
+
+function completeTask() {
+  streak++;
+  save();
+  render();
+  confetti();
+  document.getElementById("doneBtn").style.display = "none";
+}
+
+function confetti() {
+  for (let i = 0; i < 20; i++) {
+    const c = document.createElement("div");
+    c.style.position = "fixed";
+    c.style.width = "8px";
+    c.style.height = "8px";
+    c.style.background = ["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
+    c.style.left = Math.random() * window.innerWidth + "px";
+    c.style.top = "0px";
+    c.style.opacity = "1";
+    c.style.transition = "1s";
+
+    document.body.appendChild(c);
+
+    setTimeout(() => {
+      c.style.top = "600px";
+      c.style.opacity = "0";
+    }, 10);
+
+    setTimeout(() => c.remove(), 1000);
+  }
+}
+
+render();
+</script>
+
+</body>
 </html>
