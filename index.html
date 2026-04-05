@@ -12,32 +12,16 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI';
       background: radial-gradient(circle at top, #12002a, #000);
       color: white;
       text-align: center;
-      overflow-x: hidden;
-    }
-
-    /* ✧ subtle animated background glow */
-    body::before {
-      content: "";
-      position: fixed;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(124,58,237,0.2), transparent 60%);
-      animation: pulse 8s infinite ease-in-out;
-      z-index: -1;
-    }
-
-    @keyframes pulse {
-      0%,100% { transform: scale(1); opacity: 0.4; }
-      50% { transform: scale(1.2); opacity: 0.7; }
     }
 
     h1 {
-      font-size: 2.2rem;
-      margin-top: 20px;
+      font-size: 2.4rem;
+      margin-top: 30px;
+      margin-bottom: 20px;
       background: linear-gradient(90deg, #c084fc, #f472b6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -46,24 +30,23 @@
     .container {
       width: 100%;
       min-height: 100vh;
-      padding: 20px;
+      padding: 10px 20px 0 20px;
 
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      justify-content: flex-start;
     }
 
     input, select {
       width: 85%;
       max-width: 400px;
       padding: 14px;
+      margin: 8px;
       border-radius: 14px;
       border: none;
       background: rgba(255,255,255,0.08);
       color: white;
-      backdrop-filter: blur(10px);
-      font-size: 1rem;
     }
 
     button {
@@ -72,14 +55,13 @@
       border: none;
       background: linear-gradient(135deg, #7c3aed, #ec4899);
       color: white;
+      margin: 6px;
       font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(167,139,250,0.5);
-      transition: 0.2s;
     }
 
-    button:active {
-      transform: scale(0.95);
+    .secondary {
+      background: rgba(255,255,255,0.1);
     }
 
     ul {
@@ -96,21 +78,12 @@
       border-radius: 14px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(10px);
     }
 
-    .delete {
-      background: none;
-      color: #ff6b6b;
-      font-size: 1.2rem;
-    }
-
-    /* ✧ upgraded 8 ball */
     .ball {
-      width: 260px;
-      height: 260px;
-      margin: 25px 0;
+      width: 240px;
+      height: 240px;
+      margin: 20px 0 10px 0;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #1a1a1a, #000);
       display: flex;
@@ -118,39 +91,23 @@
       justify-content: center;
       box-shadow:
         inset -20px -20px 40px rgba(0,0,0,0.9),
-        inset 10px 10px 30px rgba(255,255,255,0.1),
-        0 0 80px rgba(124,58,237,0.8);
+        0 0 60px rgba(124,58,237,0.8);
     }
 
     .inner {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       background: linear-gradient(135deg, #6366f1, #c084fc);
       transform: rotate(45deg);
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
     }
 
     #result {
       transform: rotate(-45deg);
       font-weight: bold;
-      font-size: 1.1rem;
-      padding: 10px;
-    }
-
-    .shake {
-      animation: shake 0.6s;
-    }
-
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      50% { transform: translateX(10px); }
-      75% { transform: translateX(-10px); }
-      100% { transform: translateX(0); }
     }
 
     .doneBtn {
@@ -159,9 +116,9 @@
     }
 
     .streak {
-      margin-top: 10px;
+      margin-top: 8px;
+      margin-bottom: 10px;
       color: #f472b6;
-      font-size: 1.1rem;
     }
   </style>
 </head>
@@ -182,9 +139,13 @@
 
   <button onclick="addTask()">+ Add</button>
 
+  <button class="secondary" onclick="toggleSave()">
+    💾 Toggle Save Mode
+  </button>
+
   <ul id="taskList"></ul>
 
-  <div id="ball" class="ball">
+  <div class="ball">
     <div class="inner">
       <div id="result">Ask me…</div>
     </div>
@@ -195,15 +156,31 @@
 
   <div class="streak" id="streak">🔥 Streak: 0</div>
 
+  <button class="secondary" onclick="clearStreak()">Reset Streak</button>
+
 </div>
 
 <script>
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let saveMode = localStorage.getItem("saveMode") === "true";
+
+let tasks = saveMode
+  ? JSON.parse(localStorage.getItem("tasks")) || []
+  : [];
+
 let streak = parseInt(localStorage.getItem("streak")) || 0;
 
 function save() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+  if (saveMode) {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
   localStorage.setItem("streak", streak);
+  localStorage.setItem("saveMode", saveMode);
+}
+
+function toggleSave() {
+  saveMode = !saveMode;
+  save();
+  alert(saveMode ? "Saving ON" : "Saving OFF");
 }
 
 function addTask() {
@@ -230,11 +207,10 @@ function render() {
 
   tasks.forEach((t, i) => {
     const li = document.createElement("li");
-    li.textContent = `${emoji(t.energy)} ${t.text}`;
+    li.textContent = `${t.text}`;
 
     const btn = document.createElement("button");
     btn.textContent = "✕";
-    btn.className = "delete";
     btn.onclick = () => deleteTask(i);
 
     li.appendChild(btn);
@@ -244,48 +220,25 @@ function render() {
   document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
 }
 
-function emoji(e) {
-  if (e === "low") return "💤";
-  if (e === "medium") return "⚡";
-  return "🔥";
-}
-
-function tinyStep(task) {
-  return "👉 Just start: " + task;
-}
-
 function decide() {
   if (tasks.length === 0) return alert("Add tasks");
 
-  const ball = document.getElementById("ball");
-  ball.classList.add("shake");
-
   const selectedEnergy = document.getElementById("energy").value;
 
-  let pool = [];
+  let pool = tasks;
 
   if (selectedEnergy === "low") {
     pool = tasks.filter(t => t.energy === "low");
   }
 
   if (selectedEnergy === "medium") {
-    pool = tasks.filter(t => t.energy === "low" || t.energy === "medium");
+    pool = tasks.filter(t => t.energy !== "high");
   }
 
-  if (selectedEnergy === "high") {
-    pool = tasks;
-  }
+  const choice = pool[Math.floor(Math.random() * pool.length)];
 
-  if (pool.length === 0) pool = tasks;
-
-  setTimeout(() => {
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-
-    document.getElementById("result").textContent = tinyStep(choice.text);
-    document.getElementById("doneBtn").style.display = "inline-block";
-
-    ball.classList.remove("shake");
-  }, 600);
+  document.getElementById("result").textContent = "👉 " + choice.text;
+  document.getElementById("doneBtn").style.display = "inline-block";
 }
 
 function completeTask() {
@@ -293,6 +246,12 @@ function completeTask() {
   save();
   render();
   document.getElementById("doneBtn").style.display = "none";
+}
+
+function clearStreak() {
+  streak = 0;
+  save();
+  render();
 }
 
 render();
