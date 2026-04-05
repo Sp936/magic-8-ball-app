@@ -3,83 +3,123 @@
   <title>Magic 8 Ball ✨</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #1a0033, #000);
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #0f0f1a, #000);
       color: white;
       text-align: center;
       padding: 20px;
-    }h1 { font-size: 2.5rem; }
+    }h1 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-input, button, select {
-  padding: 10px;
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(167,139,250,0.3);
+}
+
+input, select {
+  width: 70%;
+  padding: 12px;
   margin: 5px;
   border-radius: 12px;
   border: none;
-  font-size: 1rem;
+  background: rgba(255,255,255,0.1);
+  color: white;
 }
 
-input { width: 45%; }
-
 button {
-  background: #7c3aed;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #7c3aed, #f472b6);
   color: white;
   cursor: pointer;
   transition: 0.2s;
+  margin: 5px;
 }
 
 button:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(167,139,250,0.6);
 }
 
 ul { list-style: none; padding: 0; }
 
 li {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   margin: 5px;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  transition: 0.2s;
 }
 
-.delete { background: transparent; color: #ff6b6b; }
+li:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.delete {
+  background: transparent;
+  color: #ff6b6b;
+  font-size: 1.2rem;
+}
 
 .ball {
   width: 260px;
   height: 260px;
   margin: 30px auto;
-  background: radial-gradient(circle at 30% 30%, #444, #000);
+  background: radial-gradient(circle at 30% 30%, #222, #000);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 60px rgba(124, 58, 237, 0.7);
+  box-shadow:
+    inset -10px -10px 20px rgba(0,0,0,0.8),
+    inset 10px 10px 20px rgba(255,255,255,0.1),
+    0 0 60px rgba(167,139,250,0.7);
+  position: relative;
 }
 
 .inner {
-  width: 130px;
-  height: 130px;
-  background: #4f46e5;
+  width: 140px;
+  height: 140px;
+  background: linear-gradient(135deg, #4f46e5, #a78bfa);
   transform: rotate(45deg);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
 }
 
 #result {
   transform: rotate(-45deg);
-  font-size: 1rem;
+  font-size: 1.1rem;
   padding: 10px;
+  font-weight: bold;
 }
 
-.shake { animation: shake 0.8s; }
+.shake {
+  animation: shake 0.8s;
+}
 
 @keyframes shake {
   0% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  50% { transform: translateX(10px); }
-  75% { transform: translateX(-10px); }
+  25% { transform: translateX(-12px); }
+  50% { transform: translateX(12px); }
+  75% { transform: translateX(-12px); }
   100% { transform: translateX(0); }
 }
 
@@ -87,36 +127,46 @@ li {
   position: fixed;
   width: 8px;
   height: 8px;
-  background: gold;
   animation: fall 1s linear forwards;
 }
 
 @keyframes fall {
   from { transform: translateY(-100px); opacity: 1; }
-  to { transform: translateY(600px); opacity: 0; }
+  to { transform: translateY(700px); opacity: 0; }
 }
 
 .streak {
   margin-top: 10px;
   font-size: 1.2rem;
-  color: #a78bfa;
+  color: #f472b6;
 }
 
   </style>
 </head>
-<body>  <h1>✨ Magic 8 Ball ✨</h1>  <input id="taskInput" placeholder="Task">  <select id="energy">
-    <option value="low">💤 Low</option>
-    <option value="medium">⚡ Medium</option>
-    <option value="high">🔥 High</option>
-  </select><button onclick="addTask()">Add</button>
+<body>  <h1>🔮 Decide For Me</h1>  <div class="container"><input id="taskInput" placeholder="What are your options?">
 
-  <ul id="taskList"></ul>  <div id="ball" class="ball">
-    <div class="inner">
-      <div id="result">Shake me</div>
-    </div>
-  </div><button onclick="decide()">🔮 Decide</button>
+<select id="energy">
+  <option value="low">💤 Low energy</option>
+  <option value="medium">⚡ Medium energy</option>
+  <option value="high">🔥 High energy</option>
+</select>
 
-  <div class="streak" id="streak">🔥 Streak: 0</div>  <script>
+<br>
+<button onclick="addTask()">+ Add</button>
+
+<ul id="taskList"></ul>
+
+<div id="ball" class="ball">
+  <div class="inner">
+    <div id="result">Ask me…</div>
+  </div>
+</div>
+
+<button onclick="decide()">✨ Decide</button>
+
+<div class="streak" id="streak">🔥 Streak: 0</div>
+
+  </div>  <script>
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     let streak = parseInt(localStorage.getItem("streak")) || 0;
 
@@ -169,10 +219,6 @@ li {
       return "🔥";
     }
 
-    function tinyStep(task) {
-      return "Start: " + task;
-    }
-
     function decide() {
       if (tasks.length === 0) return alert("Add tasks");
 
@@ -186,9 +232,7 @@ li {
       setTimeout(() => {
         const choice = pool[Math.floor(Math.random() * pool.length)];
 
-        const finalTask = tinyStep(choice.text);
-
-        document.getElementById("result").textContent = finalTask;
+        document.getElementById("result").textContent = "✨ " + choice.text;
 
         streak++;
         save();
@@ -200,11 +244,11 @@ li {
     }
 
     function confetti() {
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 25; i++) {
         const c = document.createElement("div");
         c.className = "confetti";
         c.style.left = Math.random() * window.innerWidth + "px";
-        c.style.background = ["#facc15","#a78bfa","#34d399"][Math.floor(Math.random()*3)];
+        c.style.background = ["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
         document.body.appendChild(c);
         setTimeout(() => c.remove(), 1000);
       }
