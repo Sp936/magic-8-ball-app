@@ -113,4 +113,191 @@
 
     #result {
       transform: rotate(-45deg);
-      font-size: 1
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .shake {
+      animation: shake 0.8s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-12px); }
+      50% { transform: translateX(12px); }
+      75% { transform: translateX(-12px); }
+      100% { transform: translateX(0); }
+    }
+
+    .doneBtn {
+      background: #22c55e;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .streak {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #f472b6;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🔮 Magic Dopamine Ball</h1>
+
+<div class="container">
+
+  <input id="taskInput" placeholder="What are your options?">
+
+  <select id="energy">
+    <option value="low">💤 Low energy</option>
+    <option value="medium">⚡ Medium energy</option>
+    <option value="high">🔥 High energy</option>
+  </select>
+
+  <button onclick="addTask()">+ Add</button>
+
+  <ul id="taskList"></ul>
+
+  <div id="ball" class="ball">
+    <div class="inner">
+      <div id="result">Ask me…</div>
+    </div>
+  </div>
+
+  <button onclick="decide()">✨ Decide</button>
+  <button id="doneBtn" class="doneBtn" onclick="completeTask()">✅ I did it</button>
+
+  <div class="streak" id="streak">🔥 Streak: 0</div>
+
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+
+function save() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  localStorage.setItem("streak", streak);
+}
+
+function addTask() {
+  const text = document.getElementById("taskInput").value;
+  const energy = document.getElementById("energy").value;
+
+  if (text.trim() !== "") {
+    tasks.push({ text, energy });
+    document.getElementById("taskInput").value = "";
+    save();
+    render();
+  }
+}
+
+function deleteTask(i) {
+  tasks.splice(i, 1);
+  save();
+  render();
+}
+
+function render() {
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+
+  tasks.forEach((t, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${emoji(t.energy)} ${t.text}`;
+
+    const btn = document.createElement("button");
+    btn.textContent = "✕";
+    btn.className = "delete";
+    btn.onclick = () => deleteTask(i);
+
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
+}
+
+function emoji(e) {
+  if (e === "low") return "💤";
+  if (e === "medium") return "⚡";
+  return "🔥";
+}
+
+function tinyStep(task) {
+  return "👉 Just start: " + task;
+}
+
+function decide() {
+  if (tasks.length === 0) return alert("Add tasks");
+
+  const ball = document.getElementById("ball");
+  ball.classList.add("shake");
+
+  const selectedEnergy = document.getElementById("energy").value;
+
+  let pool = [];
+
+  if (selectedEnergy === "low") {
+    pool = tasks.filter(t => t.energy === "low");
+  }
+
+  if (selectedEnergy === "medium") {
+    pool = tasks.filter(t => t.energy === "low" || t.energy === "medium");
+  }
+
+  if (selectedEnergy === "high") {
+    pool = tasks;
+  }
+
+  if (pool.length === 0) pool = tasks;
+
+  setTimeout(() => {
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+
+    document.getElementById("result").textContent = tinyStep(choice.text);
+    document.getElementById("doneBtn").style.display = "inline-block";
+
+    ball.classList.remove("shake");
+  }, 800);
+}
+
+function completeTask() {
+  streak++;
+  save();
+  render();
+  confetti();
+  document.getElementById("doneBtn").style.display = "none";
+}
+
+function confetti() {
+  for (let i = 0; i < 20; i++) {
+    const c = document.createElement("div");
+    c.style.position = "fixed";
+    c.style.width = "8px";
+    c.style.height = "8px";
+    c.style.background = ["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
+    c.style.left = Math.random() * window.innerWidth + "px";
+    c.style.top = "0px";
+    c.style.opacity = "1";
+    c.style.transition = "1s";
+
+    document.body.appendChild(c);
+
+    setTimeout(() => {
+      c.style.top = "600px";
+      c.style.opacity = "0";
+    }, 10);
+
+    setTimeout(() => c.remove(), 1000);
+  }
+}
+
+render();
+</script>
+
+</body>
+</html>
