@@ -8,12 +8,9 @@
       color: white;
       text-align: center;
       padding: 20px;
-    }h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-}
+    }h1 { font-size: 2.5rem; }
 
-input, button {
+input, button, select {
   padding: 10px;
   margin: 5px;
   border-radius: 10px;
@@ -21,33 +18,26 @@ input, button {
   font-size: 1rem;
 }
 
-input {
-  width: 60%;
-}
+input { width: 50%; }
 
 button {
   background: #7c3aed;
   color: white;
   cursor: pointer;
-  transition: 0.2s;
 }
 
-button:hover {
-  background: #a78bfa;
-  transform: scale(1.05);
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
+ul { list-style: none; padding: 0; }
 
 li {
   background: rgba(255,255,255,0.1);
   margin: 5px;
   padding: 8px;
   border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
 }
+
+.delete { background: transparent; color: #ff6b6b; }
 
 .ball {
   width: 250px;
@@ -59,7 +49,6 @@ li {
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
-  position: relative;
 }
 
 .inner {
@@ -71,105 +60,80 @@ li {
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
 }
 
-#result {
-  transform: rotate(-45deg);
-  font-size: 0.9rem;
-  padding: 10px;
-}
-
-.shake {
-  animation: shake 0.8s;
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  50% { transform: translateX(10px); }
-  75% { transform: translateX(-10px); }
-  100% { transform: translateX(0); }
-}
-
-.sparkle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-  animation: float 3s infinite ease-in-out;
-}
-
-@keyframes float {
-  0% { opacity: 0; transform: translateY(0); }
-  50% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-50px); }
-}
+#result { transform: rotate(-45deg); }
 
   </style>
 </head>
-<body>  <h1>✨ Magic 8 Ball ✨</h1>  <input id="taskInput" placeholder="Add something to do">
-  <button onclick="addTask()">Add</button>  <ul id="taskList"></ul>  <div id="ball" class="ball">
+<body>  <h1>✨ Magic 8 Ball ✨</h1>  <input id="taskInput" placeholder="Task">  <select id="energy">
+    <option value="low">💤 Low energy</option>
+    <option value="medium">⚡ Medium</option>
+    <option value="high">🔥 High</option>
+  </select><button onclick="addTask()">Add</button>
+
+  <ul id="taskList"></ul>  <div class="ball">
     <div class="inner">
       <div id="result">Shake me</div>
     </div>
-  </div><button onclick="decide()">🔮 Decide for me</button>
+  </div><button onclick="decide()">🔮 Decide</button>
 
   <script>
-    let tasks = [];
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
 
     function addTask() {
-      const input = document.getElementById("taskInput");
-      const value = input.value.trim();
+      const text = document.getElementById("taskInput").value;
+      const energy = document.getElementById("energy").value;
 
-      if (value !== "") {
-        tasks.push(value);
-        input.value = "";
-        renderList();
+      if (text.trim() !== "") {
+        tasks.push({ text, energy });
+        saveTasks();
+        render();
       }
     }
 
-    function renderList() {
+    function deleteTask(i) {
+      tasks.splice(i, 1);
+      saveTasks();
+      render();
+    }
+
+    function render() {
       const list = document.getElementById("taskList");
       list.innerHTML = "";
 
-      tasks.forEach(task => {
+      tasks.forEach((t, i) => {
         const li = document.createElement("li");
-        li.textContent = task;
+        li.textContent = `${t.text} (${t.energy})`;
+
+        const btn = document.createElement("button");
+        btn.textContent = "✕";
+        btn.className = "delete";
+        btn.onclick = () => deleteTask(i);
+
+        li.appendChild(btn);
         list.appendChild(li);
       });
     }
 
     function decide() {
-      if (tasks.length === 0) {
-        alert("Add some options first!");
-        return;
-      }
+      if (tasks.length === 0) return alert("Add tasks");
 
-      const ball = document.getElementById("ball");
-      ball.classList.add("shake");
+      const selectedEnergy = document.getElementById("energy").value;
 
-      setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * tasks.length);
-        const choice = tasks[randomIndex];
+      const filtered = tasks.filter(t => t.energy === selectedEnergy);
 
-        document.getElementById("result").textContent = choice;
-        ball.classList.remove("shake");
-        createSparkles();
-      }, 800);
+      const pool = filtered.length ? filtered : tasks;
+
+      const choice = pool[Math.floor(Math.random() * pool.length)];
+
+      document.getElementById("result").textContent = choice.text;
     }
 
-    function createSparkles() {
-      for (let i = 0; i < 10; i++) {
-        const sparkle = document.createElement("div");
-        sparkle.className = "sparkle";
-        sparkle.style.left = Math.random() * 250 + "px";
-        sparkle.style.top = Math.random() * 250 + "px";
-        document.body.appendChild(sparkle);
-
-        setTimeout(() => sparkle.remove(), 3000);
-      }
-    }
+    render();
   </script></body>
 </html>
