@@ -1,10 +1,11 @@
 {
   "name": "Magic Dopamine Ball",
   "short_name": "Dopamine Ball",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0f1a",
   "theme_color": "#7c3aed",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "file_00000000eb2c72469b0cd174bf8953a5.png",
