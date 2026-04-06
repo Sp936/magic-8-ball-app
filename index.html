@@ -278,6 +278,9 @@ Set your current energy before deciding.<br><br>
 <audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
 <script>
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+updateStreak();
+
 let saveMode = localStorage.getItem("saveMode") === "true";
 let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
 
@@ -289,6 +292,25 @@ function toggleSave(){
   saveMode = !saveMode;
   document.getElementById("switch").classList.toggle("active", saveMode);
   localStorage.setItem("saveMode", saveMode);
+}
+
+function completeTask(){
+  streak++;
+  localStorage.setItem("streak", streak);
+
+  updateStreak();
+
+  // ✧ stronger reward
+  if(navigator.vibrate) navigator.vibrate([100,50,150]);
+
+  particles();
+
+  // optional sound boost
+  document.getElementById("popSound").play();
+}
+
+function updateStreak(){
+  document.getElementById("streak").textContent = "🔥 Streak: " + streak;
 }
 
 function save(){
