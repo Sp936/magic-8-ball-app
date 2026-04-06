@@ -16,23 +16,23 @@ body {
   min-height:100vh;
 }
 
-/* ✧ APP LAYOUT */
+/* ✧ APP STRUCTURE */
 .app{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   min-height:100vh;
-  padding:10px 0;
+  padding:20px 0 10px;
 }
 
-/* ✧ TOP SECTION */
+/* ✧ SECTIONS */
 .top{
   display:flex;
   flex-direction:column;
   align-items:center;
+  gap:14px; /* spacing between header, instructions, input */
 }
 
-/* ✧ MIDDLE */
 .middle{
   display:flex;
   justify-content:center;
@@ -40,21 +40,22 @@ body {
   flex:1;
 }
 
-/* ✧ BOTTOM */
 .bottom{
   display:flex;
   flex-direction:column;
   align-items:center;
+  gap:10px;
   margin-bottom:10px;
 }
 
-/* HEADER */
+/* ✧ HEADER */
 .header {
   display:flex;
   justify-content:center;
   align-items:center;
   gap:14px;
   margin-top:10px;
+  margin-bottom:6px;
 }
 
 .header-ball {
@@ -86,12 +87,11 @@ h1 {
   -webkit-text-fill-color:transparent;
 }
 
-/* INSTRUCTIONS */
+/* ✧ INSTRUCTIONS (FULL + CLEAN) */
 .instructions{
   width:85%;max-width:400px;
-  margin:12px auto;
-  padding:14px;
-  border-radius:14px;
+  padding:16px;
+  border-radius:16px;
   background:rgba(255,255,255,0.06);
   cursor:pointer;
   text-align:left;
@@ -99,40 +99,47 @@ h1 {
 
 .instructions p{
   display:none;
-  font-size:0.9rem;
-  line-height:1.4;
+  font-size:0.92rem;
+  line-height:1.5;
 }
 
 .instructions.active p{
   display:block;
 }
 
-/* INPUT */
+/* ✧ INPUT */
 input,select{
   width:85%;max-width:400px;
-  padding:14px;margin:8px;
-  border-radius:14px;border:none;
+  padding:14px;
+  border-radius:14px;
+  border:none;
   background:rgba(255,255,255,0.1);
   color:#fff;
 }
 
+/* ✧ BUTTON */
 button{
   padding:14px;
   border-radius:14px;
   border:none;
   background:linear-gradient(135deg,#7c3aed,#ec4899);
   color:#fff;
-  margin:6px;
 }
 
-/* BALL */
+/* ✧ BALL (REDUCED SIZE) */
 .ball{
-  width:230px;height:230px;
+  width:190px;
+  height:190px;
   border-radius:50%;
   background:radial-gradient(circle,#0a0a0a,#000);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 60px rgba(124,58,237,1),
-             0 0 120px rgba(236,72,153,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  box-shadow:
+    0 0 50px rgba(124,58,237,1),
+    0 0 100px rgba(236,72,153,0.6);
+
   animation:breath 4s ease-in-out infinite;
 }
 
@@ -159,10 +166,11 @@ button{
 }
 
 .inner{
-  width:120px;height:120px;
+  width:100px;
+  height:100px;
   background:linear-gradient(135deg,#6366f1,#c084fc);
   transform:rotate(45deg);
-  border-radius:24px;
+  border-radius:20px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -173,18 +181,14 @@ button{
   font-weight:bold;
 }
 
-.done {
-  font-size:20px;
-  color:#34d399;
-}
-
-/* TASKS */
+/* ✧ TASKS LEFT ALIGNED */
 li{
   margin:12px auto;
   background:#222;
   padding:16px;
   border-radius:16px;
   max-width:320px;
+
   display:flex;
   flex-direction:column;
   align-items:flex-start;
@@ -205,7 +209,7 @@ li{
   color:white;
 }
 
-/* CONFETTI */
+/* ✧ CONFETTI */
 .confetti{
   position:fixed;
   width:8px;height:8px;
@@ -220,15 +224,21 @@ li{
   }
 }
 
-/* SAVE */
+/* ✧ SAVE */
 .switch{
   width:40px;height:20px;
-  background:#555;border-radius:20px;
-  margin:10px auto;position:relative;
+  background:#555;
+  border-radius:20px;
+  margin:10px auto;
+  position:relative;
 }
 .switch::after{
-  content:"";width:16px;height:16px;background:white;
-  position:absolute;top:2px;left:2px;border-radius:50%;
+  content:"";
+  width:16px;height:16px;
+  background:white;
+  position:absolute;
+  top:2px;left:2px;
+  border-radius:50%;
   transition:0.2s;
 }
 .switch.active{background:#7c3aed;}
@@ -267,8 +277,7 @@ li{
 
 .streak{
   color:#ff9edb;
-  margin-top:10px;
-  text-align:center;
+  margin-top:4px;
 }
 </style>
 </head>
@@ -287,7 +296,27 @@ li{
     <div class="instructions" onclick="this.classList.toggle('active')">
       <strong>ℹ️ How to use</strong>
       <p>
-        Add tasks → assign energy → set your current energy → press decide → follow it → build streak.
+        <strong>Step 1:</strong> Add your options<br>
+        Anything you could realistically do right now.<br><br>
+
+        <strong>Step 2:</strong> Assign energy<br>
+        💤 Low → minimal effort<br>
+        ⚡ Medium → some effort<br>
+        🔥 High → more demanding<br><br>
+
+        <strong>Step 3:</strong> Set your current energy<br>
+        Match it to how you feel right now.<br><br>
+
+        <strong>Step 4:</strong> Press Decide<br>
+        The ball will choose something aligned.<br><br>
+
+        <strong>Step 5:</strong> Follow it<br>
+        No overthinking.<br><br>
+
+        <strong>Step 6:</strong> Tap “I did it”<br>
+        Build your streak 🔥<br><br>
+
+        <strong>Optional:</strong> Turn on save mode to keep tasks.
       </p>
     </div>
 
