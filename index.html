@@ -51,17 +51,26 @@ h1 {
   -webkit-text-fill-color:transparent;
 }
 
-/* INSTRUCTIONS */
+/* ✧ INSTRUCTIONS (FIXED + CLEAN) */
 .instructions{
   width:85%;max-width:400px;
   margin:12px auto;
-  padding:12px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.05);
+  padding:14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.06);
   cursor:pointer;
+  text-align:left;
 }
-.instructions p{display:none;text-align:left;font-size:0.9rem;}
-.instructions.active p{display:block;}
+
+.instructions p{
+  display:none;
+  font-size:0.9rem;
+  line-height:1.4;
+}
+
+.instructions.active p{
+  display:block;
+}
 
 /* INPUT */
 input,select{
@@ -103,9 +112,8 @@ button{
 }
 
 @keyframes decideSpin{
-  0%{transform:rotate(0deg) scale(1);}
-  50%{transform:rotate(180deg) scale(1.05);}
-  100%{transform:rotate(360deg) scale(1);}
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
 }
 
 .ball.donePulse{
@@ -136,6 +144,34 @@ button{
   color:#34d399;
 }
 
+/* ✧ TASKS TRUE LEFT ALIGN */
+li{
+  margin:12px auto;
+  background:#222;
+  padding:16px;
+  border-radius:16px;
+  max-width:320px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+
+.task-text{
+  text-align:left;
+  width:100%;
+  margin-bottom:8px;
+}
+
+.delete-btn{
+  align-self:flex-end;
+  background:linear-gradient(135deg,#7c3aed,#ec4899);
+  border:none;
+  border-radius:12px;
+  padding:6px 10px;
+  color:white;
+}
+
 /* CONFETTI */
 .confetti{
   position:fixed;
@@ -151,31 +187,7 @@ button{
   }
 }
 
-/* TASKS LEFT ALIGNED */
-li{
-  margin:12px auto;
-  background:#222;
-  padding:16px;
-  border-radius:16px;
-  max-width:320px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.task-text{
-  text-align:left;
-}
-
-.delete-btn{
-  background:linear-gradient(135deg,#7c3aed,#ec4899);
-  border:none;
-  border-radius:12px;
-  padding:6px 10px;
-  color:white;
-}
-
-/* SAVE TOGGLE */
+/* SAVE */
 .switch{
   width:40px;height:20px;
   background:#555;border-radius:20px;
@@ -221,7 +233,6 @@ li{
 }
 
 .streak{color:#ff9edb;margin-top:10px;}
-
 </style>
 </head>
 
@@ -232,15 +243,31 @@ li{
   <h1>Magic Dopamine Ball</h1>
 </div>
 
-<!-- INSTRUCTIONS -->
+<!-- ✧ INSTRUCTIONS (UPGRADED) -->
 <div class="instructions" onclick="this.classList.toggle('active')">
-ℹ️ How to use
+<strong>ℹ️ How to use</strong>
 <p>
-Add tasks + assign energy.<br><br>
-Set your current energy level.<br><br>
-Press decide → follow it.<br><br>
-Tap "I did it" → build streak.<br><br>
-Turn on save to keep tasks.
+<strong>Step 1:</strong> Add your options<br>
+Type anything you could do right now.<br><br>
+
+<strong>Step 2:</strong> Assign energy<br>
+💤 Low = very easy<br>
+⚡ Medium = some effort<br>
+🔥 High = more demanding<br><br>
+
+<strong>Step 3:</strong> Set your current energy<br>
+Match the dropdown to how you feel.<br><br>
+
+<strong>Step 4:</strong> Press Decide<br>
+The ball chooses what you can handle.<br><br>
+
+<strong>Step 5:</strong> Follow it<br>
+No overthinking.<br><br>
+
+<strong>Step 6:</strong> Tap "I did it"<br>
+Build your streak 🔥<br><br>
+
+<strong>Optional:</strong> Save mode keeps tasks after refresh.
 </p>
 </div>
 
