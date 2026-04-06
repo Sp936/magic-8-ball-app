@@ -11,6 +11,14 @@
       "src": "file_00000000eb2c72469b0cd174bf8953a5.png",
       "sizes": "512x512",
       "type": "image/png"
+"icons": [
+  {
+    "src": "file_00000000eb2c72469b0cd174bf8953a5.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any maskable"
+  }
+]
     }
   ]
 }
