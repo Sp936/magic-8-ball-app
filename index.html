@@ -393,6 +393,7 @@ function deleteTask(i){
 /* ✧ DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
+if(navigator.vibrate) navigator.vibrate(40);
 
   ball.classList.add("deciding");
 
