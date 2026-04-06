@@ -407,7 +407,12 @@ function decide(){
 /* ✧ COMPLETE */
 function completeTask(){
   if(lastChoiceIndex!==null){
-    tasks.splice(lastChoiceIndex,1);
+
+    // ✧ ONLY remove if NOT saving
+    if(!saveMode){
+      tasks.splice(lastChoiceIndex,1);
+    }
+
     lastChoiceIndex=null;
     render();
     save();
@@ -417,10 +422,21 @@ function completeTask(){
   localStorage.setItem("streak",streak);
   streakEl.textContent="🔥 Streak: "+streak;
 
-  result.textContent="✨ DONE ✨";
-  ball.classList.add("donePulse");
+  // ✧ VARIABLE REWARD TEXT (dopamine spike)
+  const rewards = [
+    "✨ DONE ✨",
+    "🔥 NICE 🔥",
+    "⚡ LET’S GO ⚡",
+    "💥 YOU DID IT 💥",
+    "🌟 KEEP GOING 🌟"
+  ];
 
+  result.textContent = rewards[Math.floor(Math.random()*rewards.length)];
+
+  ball.classList.add("donePulse");
   confetti();
+
+  if(navigator.vibrate) navigator.vibrate([50,30,80]);
 
   setTimeout(()=>{
     ball.classList.remove("donePulse");
@@ -471,6 +487,22 @@ streakEl.textContent="🔥 Streak: "+streak;
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
+/* ✧ DOPAMINE ROTATING HINTS */
+const hints = [
+  "Small wins rewire your brain.",
+  "Action creates clarity.",
+  "Done is better than perfect.",
+  "Start tiny. Momentum builds.",
+  "Your brain rewards movement, not thinking.",
+  "You don’t need motivation — just motion.",
+  "One task changes your state.",
+  "This is how momentum starts."
+];
+
+setInterval(()=>{
+  const hint = hints[Math.floor(Math.random()*hints.length)];
+  document.getElementById("dopamineHint").textContent = "✧ " + hint;
+}, 4000);
 </script>
 
 </body>
