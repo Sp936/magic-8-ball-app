@@ -4,9 +4,6 @@
   <title>Magic Dopamine Ball ✨</title>
 
   <link rel="icon" href="file_00000000eb2c72469b0cd174bf8953a5.png">
-  <link rel="manifest" href="manifest.json">
-
-  <meta name="theme-color" content="#7c3aed">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -14,28 +11,24 @@
       margin: 0;
       font-family: 'Segoe UI';
       background: radial-gradient(circle at top, #12002a, #000);
-      color: white;
+      color: #f5f5f5;
       text-align: center;
     }
 
     h1 {
       font-size: 2.4rem;
       margin-top: 30px;
-      margin-bottom: 20px;
-      background: linear-gradient(90deg, #c084fc, #f472b6);
+      font-weight: 700;
+      background: linear-gradient(90deg, #ffffff, #f472b6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .container {
-      width: 100%;
-      min-height: 100vh;
-      padding: 10px 20px 0 20px;
-
+      padding: 10px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
     }
 
     input, select {
@@ -45,8 +38,9 @@
       margin: 8px;
       border-radius: 14px;
       border: none;
-      background: rgba(255,255,255,0.08);
-      color: white;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: 500;
     }
 
     button {
@@ -57,41 +51,19 @@
       color: white;
       margin: 6px;
       font-size: 1rem;
-      cursor: pointer;
-    }
-
-    .secondary {
-      background: rgba(255,255,255,0.1);
-    }
-
-    ul {
-      width: 90%;
-      max-width: 400px;
-      padding: 0;
-      list-style: none;
-    }
-
-    li {
-      background: rgba(255,255,255,0.06);
-      margin: 6px 0;
-      padding: 12px;
-      border-radius: 14px;
-      display: flex;
-      justify-content: space-between;
+      font-weight: 600;
     }
 
     .ball {
       width: 240px;
       height: 240px;
-      margin: 20px 0 10px 0;
+      margin: 20px 0 10px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #1a1a1a, #000);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow:
-        inset -20px -20px 40px rgba(0,0,0,0.9),
-        0 0 60px rgba(124,58,237,0.8);
+      box-shadow: 0 0 60px rgba(124,58,237,0.8);
     }
 
     .inner {
@@ -107,19 +79,75 @@
 
     #result {
       transform: rotate(-45deg);
-      font-weight: bold;
-    }
-
-    .doneBtn {
-      background: #22c55e;
-      display: none;
+      font-weight: 700;
+      color: #fff;
     }
 
     .streak {
       margin-top: 8px;
-      margin-bottom: 10px;
-      color: #f472b6;
+      color: #ff9edb;
+      font-weight: 600;
     }
+
+    /* ✧ toggle switch */
+    .toggle {
+      margin: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 20px;
+      background: #555;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: 0.2s;
+    }
+
+    .switch.active {
+      background: #7c3aed;
+    }
+
+    .switch.active::after {
+      left: 22px;
+    }
+
+    /* ✧ instructions */
+    .instructions {
+      width: 85%;
+      max-width: 400px;
+      margin: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .instructions p {
+      display: none;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .instructions.active p {
+      display: block;
+    }
+
   </style>
 </head>
 
@@ -128,6 +156,12 @@
 <h1>🔮 Magic Dopamine Ball</h1>
 
 <div class="container">
+
+  <!-- ✧ instructions -->
+  <div class="instructions" onclick="toggleInstructions(this)">
+    ℹ️ How to use
+    <p>Add your options, hit decide, and follow what it says. No overthinking.</p>
+  </div>
 
   <input id="taskInput" placeholder="What are your options?">
 
@@ -139,11 +173,11 @@
 
   <button onclick="addTask()">+ Add</button>
 
-  <button class="secondary" onclick="toggleSave()">
-    💾 Toggle Save Mode
-  </button>
-
-  <ul id="taskList"></ul>
+  <!-- ✧ toggle -->
+  <div class="toggle">
+    <div id="switch" class="switch" onclick="toggleSave()"></div>
+    <span>Save tasks</span>
+  </div>
 
   <div class="ball">
     <div class="inner">
@@ -152,109 +186,62 @@
   </div>
 
   <button onclick="decide()">✨ Decide</button>
-  <button id="doneBtn" class="doneBtn" onclick="completeTask()">✅ I did it</button>
 
   <div class="streak" id="streak">🔥 Streak: 0</div>
 
-  <button class="secondary" onclick="clearStreak()">Reset Streak</button>
+  <button onclick="clearStreak()">Reset Streak</button>
 
 </div>
 
 <script>
 let saveMode = localStorage.getItem("saveMode") === "true";
-
-let tasks = saveMode
-  ? JSON.parse(localStorage.getItem("tasks")) || []
-  : [];
-
+let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
 let streak = parseInt(localStorage.getItem("streak")) || 0;
 
 function save() {
-  if (saveMode) {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }
+  if (saveMode) localStorage.setItem("tasks", JSON.stringify(tasks));
   localStorage.setItem("streak", streak);
   localStorage.setItem("saveMode", saveMode);
 }
 
 function toggleSave() {
   saveMode = !saveMode;
+  document.getElementById("switch").classList.toggle("active", saveMode);
   save();
-  alert(saveMode ? "Saving ON" : "Saving OFF");
+}
+
+function toggleInstructions(el) {
+  el.classList.toggle("active");
 }
 
 function addTask() {
   const text = document.getElementById("taskInput").value;
   const energy = document.getElementById("energy").value;
-
-  if (text.trim() !== "") {
+  if (text.trim()) {
     tasks.push({ text, energy });
-    document.getElementById("taskInput").value = "";
     save();
-    render();
+    document.getElementById("taskInput").value = "";
   }
-}
-
-function deleteTask(i) {
-  tasks.splice(i, 1);
-  save();
-  render();
-}
-
-function render() {
-  const list = document.getElementById("taskList");
-  list.innerHTML = "";
-
-  tasks.forEach((t, i) => {
-    const li = document.createElement("li");
-    li.textContent = `${t.text}`;
-
-    const btn = document.createElement("button");
-    btn.textContent = "✕";
-    btn.onclick = () => deleteTask(i);
-
-    li.appendChild(btn);
-    list.appendChild(li);
-  });
-
-  document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
 }
 
 function decide() {
-  if (tasks.length === 0) return alert("Add tasks");
-
-  const selectedEnergy = document.getElementById("energy").value;
-
-  let pool = tasks;
-
-  if (selectedEnergy === "low") {
-    pool = tasks.filter(t => t.energy === "low");
-  }
-
-  if (selectedEnergy === "medium") {
-    pool = tasks.filter(t => t.energy !== "high");
-  }
-
-  const choice = pool[Math.floor(Math.random() * pool.length)];
-
+  if (!tasks.length) return alert("Add tasks first");
+  const choice = tasks[Math.floor(Math.random() * tasks.length)];
   document.getElementById("result").textContent = "👉 " + choice.text;
-  document.getElementById("doneBtn").style.display = "inline-block";
-}
-
-function completeTask() {
-  streak++;
-  save();
-  render();
-  document.getElementById("doneBtn").style.display = "none";
 }
 
 function clearStreak() {
   streak = 0;
   save();
-  render();
+  update();
 }
 
-render();
+function update() {
+  document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
+  document.getElementById("switch").classList.toggle("active", saveMode);
+}
+
+update();
 </script>
 
 </body>
