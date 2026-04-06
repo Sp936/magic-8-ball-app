@@ -4,33 +4,35 @@
   <title>Magic Dopamine Ball ✨</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- ✧ PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7c3aed">
+
 <style>
-body {
+body{
   margin:0;
   font-family:'Segoe UI';
   background: radial-gradient(circle at top,#140033,#000);
   color:#fff;
-
   display:flex;
   flex-direction:column;
   min-height:100vh;
 }
 
-/* ✧ APP STRUCTURE */
+/* ✧ LAYOUT */
 .app{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   min-height:100vh;
-  padding:20px 0 10px;
+  padding:20px 0;
 }
 
-/* ✧ SECTIONS */
 .top{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:14px; /* spacing between header, instructions, input */
+  gap:16px;
 }
 
 .middle{
@@ -44,68 +46,50 @@ body {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:10px;
-  margin-bottom:10px;
+  gap:12px;
+  margin-bottom:120px; /* ✧ keeps buttons visible */
 }
 
 /* ✧ HEADER */
-.header {
+.header{
   display:flex;
-  justify-content:center;
   align-items:center;
   gap:14px;
-  margin-top:10px;
-  margin-bottom:6px;
 }
 
-.header-ball {
+.header-ball{
   width:70px;height:70px;
   border-radius:50%;
   background: radial-gradient(circle,#1a1a1a,#000);
-  box-shadow:0 0 30px #7c3aed, 0 0 60px #ec4899;
+  box-shadow:0 0 30px #7c3aed,0 0 60px #ec4899;
   display:flex;align-items:center;justify-content:center;
-  animation:float 4s ease-in-out infinite;
 }
 
-@keyframes float {
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-6px);}
-}
-
-.header-core {
+.header-core{
   width:30px;height:30px;
   border-radius:50%;
   background:radial-gradient(circle,#c084fc,#6366f1);
   box-shadow:0 0 20px #c084fc;
 }
 
-h1 {
-  font-size:1.9rem;
+h1{
+  font-size:1.8rem;
   margin:0;
   background:linear-gradient(90deg,#fff,#f472b6,#fff);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
-/* ✧ INSTRUCTIONS (FULL + CLEAN) */
+/* ✧ INSTRUCTIONS */
 .instructions{
   width:85%;max-width:400px;
   padding:16px;
   border-radius:16px;
   background:rgba(255,255,255,0.06);
   cursor:pointer;
-  text-align:left;
 }
-
-.instructions p{
-  display:none;
-  font-size:0.92rem;
-  line-height:1.5;
-}
-
-.instructions.active p{
-  display:block;
-}
+.instructions p{display:none;font-size:0.9rem;line-height:1.5;}
+.instructions.active p{display:block;}
 
 /* ✧ INPUT */
 input,select{
@@ -123,57 +107,36 @@ button{
   border-radius:14px;
   border:none;
   background:linear-gradient(135deg,#7c3aed,#ec4899);
-  color:#fff;
+  color:white;
 }
 
-/* ✧ BALL (REDUCED SIZE) */
+/* ✧ BALL */
 .ball{
-  width:190px;
-  height:190px;
+  width:180px;height:180px;
   border-radius:50%;
-  background:radial-gradient(circle,#0a0a0a,#000);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  box-shadow:
-    0 0 50px rgba(124,58,237,1),
-    0 0 100px rgba(236,72,153,0.6);
-
-  animation:breath 4s ease-in-out infinite;
-}
-
-@keyframes breath{
-  0%,100%{transform:scale(1);}
-  50%{transform:scale(1.03);}
+  background:radial-gradient(circle,#000,#111);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 80px #7c3aed,0 0 140px #ec4899;
 }
 
 .ball.deciding{
-  animation:decideSpin 0.9s linear infinite;
+  animation:shake 0.6s infinite;
 }
 
-@keyframes decideSpin{
+@keyframes shake{
   0%{transform:rotate(0deg);}
-  100%{transform:rotate(360deg);}
-}
-
-.ball.donePulse{
-  animation:donePulse 0.5s ease;
-}
-
-@keyframes donePulse{
-  50%{transform:scale(1.12);}
+  25%{transform:rotate(10deg);}
+  50%{transform:rotate(-8deg);}
+  75%{transform:rotate(12deg);}
+  100%{transform:rotate(0);}
 }
 
 .inner{
-  width:100px;
-  height:100px;
+  width:100px;height:100px;
   background:linear-gradient(135deg,#6366f1,#c084fc);
   transform:rotate(45deg);
   border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
 }
 
 #result{
@@ -181,69 +144,26 @@ button{
   font-weight:bold;
 }
 
-/* ✧ TASKS LEFT ALIGNED */
+/* ✧ TASK LIST */
 li{
-  margin:12px auto;
-  background:#222;
-  padding:16px;
-  border-radius:16px;
-  max-width:320px;
-
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-}
-
-.task-text{
-  text-align:left;
-  width:100%;
-  margin-bottom:8px;
-}
-
-.delete-btn{
-  align-self:flex-end;
-  background:linear-gradient(135deg,#7c3aed,#ec4899);
-  border:none;
-  border-radius:12px;
-  padding:6px 10px;
-  color:white;
-}
-
-/* ✧ CONFETTI */
-.confetti{
-  position:fixed;
-  width:8px;height:8px;
-  border-radius:2px;
-  animation:confettiFall 1s forwards;
-}
-
-@keyframes confettiFall{
-  to{
-    transform:translate(var(--x), var(--y)) rotate(720deg);
-    opacity:0;
-  }
-}
-
-/* ✧ SAVE */
-.switch{
-  width:40px;height:20px;
-  background:#555;
-  border-radius:20px;
   margin:10px auto;
-  position:relative;
+  max-width:320px;
+  background:#222;
+  padding:14px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
 }
-.switch::after{
-  content:"";
-  width:16px;height:16px;
-  background:white;
-  position:absolute;
-  top:2px;left:2px;
-  border-radius:50%;
-  transition:0.2s;
-}
-.switch.active{background:#7c3aed;}
-.switch.active::after{left:22px;}
 
+.task-text{text-align:left;}
+.delete-btn{
+  background:#ec4899;
+  border:none;
+  border-radius:8px;
+  padding:6px 10px;
+}
+
+/* ✧ DRAWER */
 .drawer{
   position:fixed;
   bottom:0;
@@ -254,7 +174,7 @@ li{
   transform:translateY(calc(100% - 80px));
   transition:0.3s;
 }
-.drawer.open{ transform:translateY(0); }
+.drawer.open{transform:translateY(0);}
 
 .handle{
   width:80px;height:8px;
@@ -275,10 +195,27 @@ li{
   pointer-events:auto;
 }
 
-.streak{
-  color:#ff9edb;
-  margin-top:4px;
+/* ✧ SAVE SWITCH */
+.switch{
+  width:40px;height:20px;
+  background:#555;
+  border-radius:20px;
+  margin:10px auto;
+  position:relative;
 }
+.switch::after{
+  content:"";
+  width:16px;height:16px;
+  background:white;
+  position:absolute;
+  top:2px;left:2px;
+  border-radius:50%;
+  transition:0.2s;
+}
+.switch.active{background:#7c3aed;}
+.switch.active::after{left:22px;}
+
+.streak{color:#ff9edb;}
 </style>
 </head>
 
@@ -286,84 +223,65 @@ li{
 
 <div class="app">
 
-  <div class="top">
+<div class="top">
 
-    <div class="header">
-      <div class="header-ball"><div class="header-core"></div></div>
-      <h1>Magic Dopamine Ball</h1>
-    </div>
+<div class="header">
+<div class="header-ball"><div class="header-core"></div></div>
+<h1>Magic Dopamine Ball</h1>
+</div>
 
-    <div class="instructions" onclick="this.classList.toggle('active')">
-      <strong>ℹ️ How to use</strong>
-      <p>
-        <strong>Step 1:</strong> Add your options<br>
-        Anything you could realistically do right now.<br><br>
+<div class="instructions" onclick="this.classList.toggle('active')">
+<strong>ℹ️ How to use</strong>
+<p>
+Add tasks → assign energy → set your current energy → press decide → follow it → build streak.<br><br>
+Save mode keeps your tasks.
+</p>
+</div>
 
-        <strong>Step 2:</strong> Assign energy<br>
-        💤 Low → minimal effort<br>
-        ⚡ Medium → some effort<br>
-        🔥 High → more demanding<br><br>
+<input id="taskInput" placeholder="Add task">
 
-        <strong>Step 3:</strong> Set your current energy<br>
-        Match it to how you feel right now.<br><br>
+<select id="energySelect">
+<option value="low">💤 Low</option>
+<option value="medium">⚡ Medium</option>
+<option value="high">🔥 High</option>
+</select>
 
-        <strong>Step 4:</strong> Press Decide<br>
-        The ball will choose something aligned.<br><br>
+<button onclick="addTask()">+ Add</button>
 
-        <strong>Step 5:</strong> Follow it<br>
-        No overthinking.<br><br>
+</div>
 
-        <strong>Step 6:</strong> Tap “I did it”<br>
-        Build your streak 🔥<br><br>
+<div class="middle">
+<div class="ball" id="ball">
+<div class="inner">
+<div id="result">Ask me…</div>
+</div>
+</div>
+</div>
 
-        <strong>Optional:</strong> Turn on save mode to keep tasks.
-      </p>
-    </div>
-
-    <input id="taskInput" placeholder="Add task">
-
-    <select id="energySelect">
-      <option value="low">💤 Low</option>
-      <option value="medium">⚡ Medium</option>
-      <option value="high">🔥 High</option>
-    </select>
-
-    <button onclick="addTask()">+ Add</button>
-
-  </div>
-
-  <div class="middle">
-    <div class="ball" id="ball">
-      <div class="inner">
-        <div id="result">Ask me…</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottom">
-    <button onclick="decide()">✨ Decide</button>
-    <button onclick="completeTask()">✅ I did it</button>
-    <div class="streak" id="streak">🔥 Streak: 0</div>
-  </div>
+<div class="bottom">
+<button onclick="decide()">✨ Decide</button>
+<button onclick="completeTask()">✅ I did it</button>
+<div class="streak" id="streak">🔥 Streak: 0</div>
+</div>
 
 </div>
 
 <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 
 <div class="drawer" id="drawer">
-  <div class="handle" onclick="openDrawer()"></div>
+<div class="handle" onclick="openDrawer()"></div>
 
-  <div>💾 Save tasks</div>
-  <div id="switch" class="switch" onclick="toggleSave()"></div>
+<div>💾 Save tasks</div>
+<div id="switch" class="switch" onclick="toggleSave()"></div>
 
-  <ul id="taskList"></ul>
+<ul id="taskList"></ul>
 </div>
 
 <script>
-let saveMode = localStorage.getItem("saveMode") === "true";
-let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
-let lastChoiceIndex=null;
+let saveMode = localStorage.getItem("saveMode")==="true";
+let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks"))||[] : [];
 let streak=parseInt(localStorage.getItem("streak"))||0;
+let lastChoiceIndex=null;
 
 function toggleSave(){
   saveMode=!saveMode;
@@ -380,8 +298,9 @@ function save(){
 
 function addTask(){
   const text=taskInput.value;
+  const energy=energySelect.value;
   if(text.trim()){
-    tasks.push({text});
+    tasks.push({text,energy});
     taskInput.value="";
     render();
     save();
@@ -416,7 +335,7 @@ function decide(){
     lastChoiceIndex=index;
     result.textContent="👉 "+tasks[index].text;
     ball.classList.remove("deciding");
-  },900);
+  },800);
 }
 
 function completeTask(){
@@ -430,30 +349,6 @@ function completeTask(){
   streak++;
   localStorage.setItem("streak",streak);
   streakEl.textContent="🔥 Streak: "+streak;
-
-  result.textContent="✨ DONE ✨";
-  ball.classList.add("donePulse");
-
-  confettiBurst();
-
-  setTimeout(()=>{
-    ball.classList.remove("donePulse");
-    result.textContent="Ask me…";
-  },1000);
-}
-
-function confettiBurst(){
-  for(let i=0;i<30;i++){
-    const c=document.createElement("div");
-    c.className="confetti";
-    c.style.setProperty('--x',(Math.random()-0.5)*400+"px");
-    c.style.setProperty('--y',(Math.random()-0.5)*500+"px");
-    c.style.left=window.innerWidth/2+"px";
-    c.style.top="60%";
-    c.style.background=["#f472b6","#34d399","#facc15","#a78bfa"][Math.floor(Math.random()*4)];
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),1000);
-  }
 }
 
 function openDrawer(){
@@ -465,18 +360,25 @@ function closeDrawer(){
   overlay.classList.remove("active");
 }
 
+/* ✧ INIT */
 const drawer=document.getElementById("drawer");
 const overlay=document.getElementById("overlay");
 const taskList=document.getElementById("taskList");
 const taskInput=document.getElementById("taskInput");
+const energySelect=document.getElementById("energySelect");
 const result=document.getElementById("result");
 const ball=document.getElementById("ball");
 const streakEl=document.getElementById("streak");
 const switchEl=document.getElementById("switch");
 
-switchEl.classList.toggle("active", saveMode);
+switchEl.classList.toggle("active",saveMode);
 render();
 streakEl.textContent="🔥 Streak: "+streak;
+
+/* ✧ PWA */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
 </script>
 
 </body>
