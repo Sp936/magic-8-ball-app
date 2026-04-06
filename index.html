@@ -16,6 +16,24 @@
       background: radial-gradient(circle at top,#140033,#000);
       color: #fff;
       text-align: center;
+/* ✧ dopamine glow */
+.ball.pulse {
+  box-shadow: 0 0 100px rgba(236,72,153,1);
+}
+
+/* ✧ particles */
+.particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: rise 0.8s linear forwards;
+}
+
+@keyframes rise {
+  from { opacity:1; transform:translateY(0); }
+  to { opacity:0; transform:translateY(-80px); }
+}
     }
 
     h1 {
