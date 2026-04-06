@@ -334,17 +334,25 @@ function decide(){
   const ball = document.getElementById("ball");
   const result = document.getElementById("result");
 
-  ball.classList.add("active");
+  ball.classList.add("active","pulse");
   result.classList.remove("show");
+
+  // ✧ vibration
+  if(navigator.vibrate) navigator.vibrate(40);
+
+  // ✧ sound
+  document.getElementById("popSound").play();
 
   setTimeout(()=>{
     const choice = pool[Math.floor(Math.random()*pool.length)];
-    result.textContent = "👉 "+choice.text;
-    result.classList.add("show");
-    ball.classList.remove("active");
-  },400);
-}
+    result.textContent = "👉 " + choice.text;
 
+    result.classList.add("show");
+    ball.classList.remove("active","pulse");
+
+    particles(); // ✧ burst
+  }, 500);
+}
 render();
 document.getElementById("switch").classList.toggle("active", saveMode);
 
