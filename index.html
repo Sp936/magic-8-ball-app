@@ -267,6 +267,8 @@ Set your current energy before deciding.<br><br>
   <ul id="taskList"></ul>
 </div>
 
+<audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+
 <script>
 let saveMode = localStorage.getItem("saveMode") === "true";
 let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
