@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Magic Dopamine Ball ✨</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -12,7 +11,6 @@
       background: radial-gradient(circle at top, #140033, #000);
       color: #fff;
       text-align: center;
-      overflow: hidden;
     }
 
     h1 {
@@ -40,7 +38,6 @@
       border: none;
       background: rgba(255,255,255,0.1);
       color: #fff;
-      font-weight: 500;
     }
 
     button {
@@ -50,9 +47,35 @@
       background: linear-gradient(135deg, #7c3aed, #ec4899);
       color: white;
       margin: 6px;
-      font-size: 1rem;
       font-weight: 600;
-      box-shadow: 0 0 20px rgba(124,58,237,0.6);
+    }
+
+    .panel {
+      width: 85%;
+      max-width: 400px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      margin-top: 10px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .panel-content {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .panel.active .panel-content {
+      display: block;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+      background: rgba(255,255,255,0.08);
+      padding: 10px;
+      border-radius: 10px;
     }
 
     .ball {
@@ -87,49 +110,38 @@
     #result {
       transform: rotate(-45deg);
       font-weight: bold;
-      text-align: center;
-      padding: 10px;
     }
 
-    .instructions {
-      width: 85%;
-      max-width: 400px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 10px;
+    .switch {
+      width: 40px;
+      height: 20px;
+      background: #555;
+      border-radius: 20px;
+      position: relative;
       cursor: pointer;
+      margin: 10px auto;
     }
 
-    .instructions p {
-      display: none;
-      font-size: 0.9rem;
-      color: #ddd;
-      text-align: left;
-      line-height: 1.4;
+    .switch::after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      background: white;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      border-radius: 50%;
+      transition: 0.2s;
     }
 
-    .instructions.active p {
-      display: block;
+    .switch.active {
+      background: #7c3aed;
     }
 
-    .streak {
-      margin-top: 8px;
-      color: #ff9edb;
-      font-weight: 600;
+    .switch.active::after {
+      left: 22px;
     }
 
-    .confetti {
-      position: fixed;
-      width: 8px;
-      height: 8px;
-      animation: fall 1s linear forwards;
-    }
-
-    @keyframes fall {
-      from { transform: translateY(-50px); opacity: 1; }
-      to { transform: translateY(600px); opacity: 0; }
-    }
   </style>
 </head>
 
@@ -139,35 +151,34 @@
 
 <div class="container">
 
-  <!-- ✧ instructions -->
-  <div class="instructions" onclick="toggleInstructions(this)">
-    ℹ️ How to use this properly
-    <p>
-    Add each task along with the <strong>energy level it requires</strong>.<br><br>
-
-    💤 Low = very easy (minimal effort)<br>
-    ⚡ Medium = some effort<br>
-    🔥 High = more demanding<br><br>
-
-    Before pressing decide, set the dropdown to your <strong>current energy level</strong>.<br><br>
-
-    The ball will choose something that matches what you can handle right now.<br><br>
-
-    👉 Then follow it. No overthinking.
-    </p>
-  </div>
-
   <input id="taskInput" placeholder="What are your options?">
 
   <select id="energy">
-    <option value="low">💤 Low energy</option>
-    <option value="medium">⚡ Medium energy</option>
-    <option value="high">🔥 High energy</option>
+    <option value="low">💤 Low</option>
+    <option value="medium">⚡ Medium</option>
+    <option value="high">🔥 High</option>
   </select>
 
   <button onclick="addTask()">+ Add</button>
 
-  <!-- ✧ ball -->
+  <!-- ✧ TASK PANEL -->
+  <div class="panel" onclick="togglePanel(this)">
+    📋 View Tasks
+
+    <div class="panel-content">
+
+      <!-- ✧ save toggle -->
+      <div onclick="event.stopPropagation()">
+        💾 Save tasks
+        <div id="switch" class="switch" onclick="toggleSave()"></div>
+      </div>
+
+      <ul id="taskList"></ul>
+
+    </div>
+  </div>
+
+  <!-- ✧ BALL -->
   <div class="ball" id="ball">
     <div class="inner">
       <div id="result">Ask me…</div>
@@ -175,87 +186,73 @@
   </div>
 
   <button onclick="decide()">✨ Decide</button>
-  <button onclick="completeTask()">✅ I did it</button>
-
-  <div class="streak" id="streak">🔥 Streak: 0</div>
 
 </div>
 
-<!-- ✧ sounds -->
-<audio id="pop" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-<audio id="win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
-
 <script>
-let tasks = [];
-let streak = 0;
+let saveMode = localStorage.getItem("saveMode") === "true";
+let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
 
-function toggleInstructions(el){
+function togglePanel(el){
   el.classList.toggle("active");
 }
 
+function toggleSave(){
+  saveMode = !saveMode;
+  document.getElementById("switch").classList.toggle("active", saveMode);
+  localStorage.setItem("saveMode", saveMode);
+}
+
 function addTask(){
-  const text = document.getElementById("taskInput").value;
-  const energy = document.getElementById("energy").value;
+  const text = taskInput.value;
+  const energy = energy.value;
+
   if(text.trim()){
     tasks.push({text, energy});
-    document.getElementById("taskInput").value = "";
+    taskInput.value="";
+    render();
+    save();
   }
+}
+
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
+  save();
+}
+
+function save(){
+  if(saveMode){
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+}
+
+function render(){
+  const list = document.getElementById("taskList");
+  list.innerHTML="";
+
+  tasks.forEach((t,i)=>{
+    const li=document.createElement("li");
+    li.innerHTML=`${t.text} <button onclick="deleteTask(${i})">✕</button>`;
+    list.appendChild(li);
+  });
 }
 
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
-  const selectedEnergy = document.getElementById("energy").value;
-
-  let pool = [];
-
-  if(selectedEnergy === "low"){
-    pool = tasks.filter(t => t.energy === "low");
-  }
-
-  if(selectedEnergy === "medium"){
-    pool = tasks.filter(t => t.energy !== "high");
-  }
-
-  if(selectedEnergy === "high"){
-    pool = tasks;
-  }
-
-  if(pool.length === 0) pool = tasks;
-
-  const ball = document.getElementById("ball");
+  const ball=document.getElementById("ball");
   ball.classList.add("active");
 
-  document.getElementById("pop").play();
-  if(navigator.vibrate) navigator.vibrate(50);
-
   setTimeout(()=>{
-    const choice = pool[Math.floor(Math.random()*pool.length)];
-    document.getElementById("result").textContent = "👉 " + choice.text;
+    const choice=tasks[Math.floor(Math.random()*tasks.length)];
+    result.textContent="👉 "+choice.text;
     ball.classList.remove("active");
-  }, 500);
+  },400);
 }
 
-function completeTask(){
-  streak++;
-  document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
-
-  document.getElementById("win").play();
-  if(navigator.vibrate) navigator.vibrate([100,50,100]);
-
-  confetti();
-}
-
-function confetti(){
-  for(let i=0;i<25;i++){
-    const c=document.createElement("div");
-    c.className="confetti";
-    c.style.left=Math.random()*window.innerWidth+"px";
-    c.style.background=["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),1000);
-  }
-}
+render();
+document.getElementById("switch").classList.toggle("active", saveMode);
 </script>
 
 </body>
