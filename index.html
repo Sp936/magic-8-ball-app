@@ -16,30 +16,21 @@ body {
   text-align:center;
 }
 
-/* ✧ HEADER (UPGRADED) */
+/* HEADER */
 .header {
   display:flex;
-  align-items:center;
   justify-content:center;
-  gap:12px;
+  align-items:center;
+  gap:10px;
   margin-top:20px;
 }
 
 .header-ball {
-  width:60px;
-  height:60px;
+  width:60px;height:60px;
   border-radius:50%;
   background: radial-gradient(circle,#222,#000);
   box-shadow:0 0 25px rgba(124,58,237,1);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  animation:float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-4px);}
+  display:flex;align-items:center;justify-content:center;
 }
 
 .header-inner {
@@ -47,33 +38,24 @@ body {
   background:linear-gradient(135deg,#6366f1,#c084fc);
   transform:rotate(45deg);
   border-radius:6px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
 }
 
 .header-inner span {
   transform:rotate(-45deg);
-  font-size:14px;
+  font-size:12px;
   font-weight:bold;
 }
 
 h1 {
   font-size:1.8rem;
-  margin:0;
-  background:linear-gradient(90deg,#fff,#f472b6,#fff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
 }
 
-/* INPUTS */
+/* INPUT */
 input,select{
-  width:85%;
-  max-width:400px;
-  padding:14px;
-  margin:8px;
-  border-radius:14px;
-  border:none;
+  width:85%;max-width:400px;
+  padding:14px;margin:8px;
+  border-radius:14px;border:none;
   background:rgba(255,255,255,0.1);
   color:#fff;
 }
@@ -93,9 +75,7 @@ button{
   margin:20px auto;
   border-radius:50%;
   background:radial-gradient(circle,#1a1a1a,#000);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 80px rgba(124,58,237,1);
 }
 .ball.pulse{box-shadow:0 0 120px rgba(236,72,153,1);}
@@ -105,64 +85,70 @@ button{
   background:linear-gradient(135deg,#6366f1,#c084fc);
   transform:rotate(45deg);
   border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
 }
 #result{transform:rotate(-45deg);font-weight:bold;}
 
-/* INSTRUCTIONS */
-.instructions{
-  width:85%;max-width:400px;
-  margin:10px auto;
-  padding:12px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.05);
-  cursor:pointer;
+/* OVERLAY */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  opacity:0;
+  pointer-events:none;
+  transition:0.2s;
 }
-.instructions p{display:none;text-align:left;font-size:0.9rem;}
-.instructions.active p{display:block;}
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
 
-/* ✧ DRAWER FIX (PROPER) */
+/* DRAWER */
 .drawer{
   position:fixed;
-  left:0;
+  bottom:0;
   width:100%;
   background:#111;
   border-radius:20px 20px 0 0;
   padding:15px;
-  bottom:0;
-  transform:translateY(calc(100% - 80px)); /* closed state */
-  transition:transform 0.3s ease;
+  transform:translateY(calc(100% - 80px));
+  transition:0.3s;
   box-shadow:0 -5px 40px rgba(236,72,153,0.7);
 }
-
 .drawer.open{
   transform:translateY(0);
 }
 
 .handle{
-  width:80px;
-  height:8px;
+  width:80px;height:8px;
   background:linear-gradient(90deg,#7c3aed,#ec4899);
   margin:0 auto 12px;
   border-radius:10px;
 }
 
 li{
-  display:flex;
-  justify-content:space-between;
-  margin:6px;
-  background:#222;
-  padding:10px;
-  border-radius:10px;
+  display:flex;justify-content:space-between;
+  margin:6px;background:#222;
+  padding:10px;border-radius:10px;
 }
+
+.switch{
+  width:40px;height:20px;
+  background:#555;border-radius:20px;
+  margin:10px auto;position:relative;
+}
+.switch::after{
+  content:"";width:16px;height:16px;background:white;
+  position:absolute;top:2px;left:2px;
+  border-radius:50%;transition:0.2s;
+}
+.switch.active{background:#7c3aed;}
+.switch.active::after{left:22px;}
 
 .streak{color:#ff9edb;margin-top:10px;}
 
 .particle{
-  position:fixed;
-  width:6px;height:6px;
+  position:fixed;width:6px;height:6px;
   border-radius:50%;
   animation:rise 0.8s linear forwards;
 }
@@ -180,11 +166,6 @@ li{
     <div class="header-inner"><span>8</span></div>
   </div>
   <h1>Magic Dopamine Ball</h1>
-</div>
-
-<div class="instructions" onclick="this.classList.toggle('active')">
-ℹ️ How to use
-<p>Add tasks → choose energy → press decide.</p>
 </div>
 
 <input id="taskInput" placeholder="Add task">
@@ -208,24 +189,67 @@ li{
 
 <div class="streak" id="streak">🔥 Streak: 0</div>
 
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER -->
 <div class="drawer" id="drawer">
-  <div class="handle"></div>
+  <div class="handle" onclick="openDrawer()"></div>
+
+  <div>💾 Save tasks</div>
+  <div id="switch" class="switch" onclick="toggleSave()"></div>
+
   <ul id="taskList"></ul>
 </div>
 
-<script>
-let tasks=[];
-let lastChoiceIndex=null;
+<audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
-function addTask(){
-  const text=document.getElementById("taskInput").value;
-  if(text.trim()){
-    tasks.push({text});
-    document.getElementById("taskInput").value="";
-    render();
+<script>
+let saveMode = localStorage.getItem("saveMode") === "true";
+let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
+let lastChoiceIndex=null;
+let streak=parseInt(localStorage.getItem("streak"))||0;
+
+/* DRAWER CONTROL */
+function openDrawer(){
+  drawer.classList.add("open");
+  overlay.classList.add("active");
+}
+function closeDrawer(){
+  drawer.classList.remove("open");
+  overlay.classList.remove("active");
+}
+
+/* SAVE */
+function toggleSave(){
+  saveMode=!saveMode;
+  switchEl.classList.toggle("active",saveMode);
+  localStorage.setItem("saveMode",saveMode);
+  save();
+}
+function save(){
+  if(saveMode){
+    localStorage.setItem("tasks",JSON.stringify(tasks));
   }
 }
 
+/* TASKS */
+function addTask(){
+  const text=document.getElementById("taskInput").value;
+  const energy=document.getElementById("energySelect").value;
+
+  if(text.trim()){
+    tasks.push({text,energy});
+    document.getElementById("taskInput").value="";
+    render();
+    save();
+  }
+}
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
+  save();
+}
 function render(){
   taskList.innerHTML="";
   tasks.forEach((t,i)=>{
@@ -235,15 +259,12 @@ function render(){
   });
 }
 
-function deleteTask(i){
-  tasks.splice(i,1);
-  render();
-}
-
+/* DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
   ball.classList.add("pulse");
+  popSound.play();
 
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
@@ -254,13 +275,22 @@ function decide(){
   },400);
 }
 
+/* COMPLETE */
 function completeTask(){
   if(lastChoiceIndex!==null){
     tasks.splice(lastChoiceIndex,1);
     render();
+    save();
   }
+
+  streak++;
+  localStorage.setItem("streak",streak);
+  streakEl.textContent="🔥 Streak: "+streak;
+
+  particles();
 }
 
+/* PARTICLES */
 function particles(){
   for(let i=0;i<20;i++){
     const p=document.createElement("div");
@@ -272,25 +302,19 @@ function particles(){
   }
 }
 
-/* ✧ swipe FIXED */
-let startY=0;
+/* INIT */
+const drawer=document.getElementById("drawer");
+const overlay=document.getElementById("overlay");
+const switchEl=document.getElementById("switch");
+const taskList=document.getElementById("taskList");
+const result=document.getElementById("result");
+const ball=document.getElementById("ball");
+const popSound=document.getElementById("popSound");
+const streakEl=document.getElementById("streak");
 
-drawer.addEventListener("touchstart",e=>{
-  startY=e.touches[0].clientY;
-});
-
-drawer.addEventListener("touchend",e=>{
-  let diff=e.changedTouches[0].clientY - startY;
-
-  if(diff < -40){
-    drawer.classList.add("open");
-  }
-  if(diff > 40){
-    drawer.classList.remove("open");
-  }
-});
-
+switchEl.classList.toggle("active", saveMode);
 render();
+streakEl.textContent="🔥 Streak: "+streak;
 </script>
 
 </body>
