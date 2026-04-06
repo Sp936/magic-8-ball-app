@@ -1,32 +1,26 @@
-Jiop<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Magic Dopamine Ball ✨</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#7c3aed">
 
-  <style>
-.streak {
-  margin-top: 8px;
-  color: #ff9edb;
-  font-weight: 600;
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: radial-gradient(circle at top,#140033,#000);
+  color: #fff;
+  text-align: center;
 }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI';
-      background: radial-gradient(circle at top,#140033,#000);
-      color: #fff;
-      text-align: center;
-/* ✧ dopamine glow */
+
+/* ✧ glow + particles FIXED */
 .ball.pulse {
   box-shadow: 0 0 100px rgba(236,72,153,1);
 }
 
-/* ✧ particles */
 .particle {
   position: fixed;
   width: 6px;
@@ -39,188 +33,193 @@ Jiop<!DOCTYPE html>
   from { opacity:1; transform:translateY(0); }
   to { opacity:0; transform:translateY(-80px); }
 }
-    }
 
-    h1 {
-      margin-top: 10px;
-      font-size: 1.8rem;
-    }
+/* ✧ header */
+.header-ball {
+  width: 100px;
+  height: 100px;
+  margin: 20px auto 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #222, #000);
+  box-shadow: 0 0 30px rgba(124,58,237,0.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    /* ✧ HEADER BALL */
-    .header-ball {
-      width: 100px;
-      height: 100px;
-      margin: 20px auto 10px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #222, #000);
-      box-shadow: 0 0 30px rgba(124,58,237,0.8);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+.header-inner {
+  width:50px;
+  height:50px;
+  background:linear-gradient(135deg,#6366f1,#c084fc);
+  transform:rotate(45deg);
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    .header-inner {
-      width:50px;
-      height:50px;
-      background:linear-gradient(135deg,#6366f1,#c084fc);
-      transform:rotate(45deg);
-      border-radius:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+.header-inner span {
+  transform:rotate(-45deg);
+  font-weight:bold;
+}
 
-    .header-inner span {
-      transform:rotate(-45deg);
-      font-weight:bold;
-    }
+h1 {
+  font-size: 1.8rem;
+}
 
-    input, select {
-      width: 85%;
-      max-width: 400px;
-      padding: 14px;
-      margin: 8px;
-      border-radius: 14px;
-      border: none;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-    }
+/* ✧ inputs */
+input, select {
+  width: 85%;
+  max-width: 400px;
+  padding: 14px;
+  margin: 8px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
 
-    button {
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      background: linear-gradient(135deg,#7c3aed,#ec4899);
-      color: white;
-      margin: 6px;
-    }
+button {
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg,#7c3aed,#ec4899);
+  color: white;
+  margin: 6px;
+}
 
-    /* ✧ BALL */
-    .ball {
-      width: 220px;
-      height: 220px;
-      margin: 20px auto;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%,#1a1a1a,#000);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow: 0 0 60px rgba(124,58,237,0.9);
-      transition:0.3s;
-    }
+/* ✧ ball */
+.ball {
+  width: 220px;
+  height: 220px;
+  margin: 20px auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%,#1a1a1a,#000);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 0 60px rgba(124,58,237,0.9);
+  transition:0.3s;
+}
 
-    .ball.active {
-      transform: scale(1.05);
-    }
+.ball.active {
+  transform: scale(1.05);
+}
 
-    .inner {
-      width: 110px;
-      height: 110px;
-      background: linear-gradient(135deg,#6366f1,#c084fc);
-      transform: rotate(45deg);
-      border-radius: 20px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+.inner {
+  width: 110px;
+  height: 110px;
+  background: linear-gradient(135deg,#6366f1,#c084fc);
+  transform: rotate(45deg);
+  border-radius: 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    #result {
-      transform: rotate(-45deg);
-      font-weight: bold;
-      opacity:0.6;
-    }
+#result {
+  transform: rotate(-45deg);
+  font-weight: bold;
+  opacity:0.6;
+}
 
-    #result.show {
-      opacity:1;
-      transform:rotate(-45deg) scale(1.05);
-    }
+#result.show {
+  opacity:1;
+  transform:rotate(-45deg) scale(1.05);
+}
 
-    /* ✧ INSTRUCTIONS */
-    .instructions {
-      width:85%;
-      max-width:400px;
-      margin:10px auto;
-      padding:10px;
-      border-radius:12px;
-      background:rgba(255,255,255,0.05);
-      cursor:pointer;
-    }
+/* ✧ instructions */
+.instructions {
+  width:85%;
+  max-width:400px;
+  margin:10px auto;
+  padding:10px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.05);
+  cursor:pointer;
+}
 
-    .instructions p {
-      display:none;
-      text-align:left;
-      font-size:0.9rem;
-    }
+.instructions p {
+  display:none;
+}
 
-    .instructions.active p {
-      display:block;
-    }
+.instructions.active p {
+  display:block;
+}
 
-    /* ✧ DRAWER */
-    .drawer {
-      position:fixed;
-      bottom:0;
-      width:100%;
-      background:#111;
-      border-radius:20px 20px 0 0;
-      padding:15px;
-      transform:translateY(80%);
-      transition:0.3s;
-    }
+/* ✧ drawer IMPROVED */
+.drawer {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#111;
+  border-radius:20px 20px 0 0;
+  padding:15px;
+  transform:translateY(75%);
+  transition:0.3s;
+  box-shadow:0 -5px 30px rgba(124,58,237,0.6);
+}
 
-    .drawer.open {
-      transform:translateY(0);
-    }
+.drawer.open {
+  transform:translateY(0);
+}
 
-    .handle {
-      width:50px;
-      height:5px;
-      background:#555;
-      border-radius:10px;
-      margin:0 auto 10px;
-    }
+/* ✧ glowing handle */
+.handle {
+  width:60px;
+  height:6px;
+  background:linear-gradient(90deg,#7c3aed,#ec4899);
+  border-radius:10px;
+  margin:0 auto 10px;
+  box-shadow:0 0 10px rgba(236,72,153,0.8);
+}
 
-    li {
-      display:flex;
-      justify-content:space-between;
-      margin:6px;
-      background:#222;
-      padding:10px;
-      border-radius:10px;
-    }
+li {
+  display:flex;
+  justify-content:space-between;
+  margin:6px;
+  background:#222;
+  padding:10px;
+  border-radius:10px;
+}
 
-    /* ✧ SAVE TOGGLE */
-    .switch {
-      width:40px;
-      height:20px;
-      background:#555;
-      border-radius:20px;
-      position:relative;
-      margin:10px auto;
-      cursor:pointer;
-    }
+.streak {
+  margin-top:8px;
+  color:#ff9edb;
+  font-weight:600;
+}
 
-    .switch::after {
-      content:"";
-      width:16px;
-      height:16px;
-      background:white;
-      position:absolute;
-      top:2px;
-      left:2px;
-      border-radius:50%;
-      transition:0.2s;
-    }
+.switch {
+  width:40px;
+  height:20px;
+  background:#555;
+  border-radius:20px;
+  position:relative;
+  margin:10px auto;
+  cursor:pointer;
+}
 
-    .switch.active {
-      background:#7c3aed;
-    }
+.switch::after {
+  content:"";
+  width:16px;
+  height:16px;
+  background:white;
+  position:absolute;
+  top:2px;
+  left:2px;
+  border-radius:50%;
+  transition:0.2s;
+}
 
-    .switch.active::after {
-      left:22px;
-    }
+.switch.active {
+  background:#7c3aed;
+}
 
-  </style>
+.switch.active::after {
+  left:22px;
+}
+
+</style>
 </head>
 
 <body>
@@ -231,17 +230,9 @@ Jiop<!DOCTYPE html>
 
 <h1>Magic Dopamine Ball</h1>
 
-<!-- ✧ INSTRUCTIONS -->
 <div class="instructions" onclick="this.classList.toggle('active')">
 ℹ️ How to use
-<p>
-Add each task and choose the energy it requires.<br><br>
-💤 Low = easy<br>
-⚡ Medium = moderate<br>
-🔥 High = harder<br><br>
-Set your current energy before deciding.<br><br>
-👉 Then follow it.
-</p>
+<p>Add tasks, set energy, then follow what it says.</p>
 </div>
 
 <input id="taskInput" placeholder="Add task">
@@ -261,11 +252,9 @@ Set your current energy before deciding.<br><br>
 </div>
 
 <button onclick="decide()">✨ Decide</button>
-
 <button onclick="completeTask()">✅ I did it</button>
 <div class="streak" id="streak">🔥 Streak: 0</div>
 
-<!-- ✧ DRAWER -->
 <div class="drawer" id="drawer">
   <div class="handle" onclick="toggleDrawer()"></div>
 
@@ -278,78 +267,30 @@ Set your current energy before deciding.<br><br>
 <audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
 <script>
-let streak = parseInt(localStorage.getItem("streak")) || 0;
-updateStreak();
+let tasks=[];
+let streak=parseInt(localStorage.getItem("streak"))||0;
 
-let saveMode = localStorage.getItem("saveMode") === "true";
-let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
+function updateStreak(){
+  document.getElementById("streak").textContent="🔥 Streak: "+streak;
+}
 
 function toggleDrawer(){
   document.getElementById("drawer").classList.toggle("open");
 }
 
-function toggleSave(){
-  saveMode = !saveMode;
-  document.getElementById("switch").classList.toggle("active", saveMode);
-  localStorage.setItem("saveMode", saveMode);
-}
-
-function completeTask(){
-  streak++;
-  localStorage.setItem("streak", streak);
-
-  updateStreak();
-
-  // ✧ stronger reward
-  if(navigator.vibrate) navigator.vibrate([100,50,150]);
-
-  particles();
-
-  // optional sound boost
-  document.getElementById("popSound").play();
-}
-
-function updateStreak(){
-  document.getElementById("streak").textContent = "🔥 Streak: " + streak;
-}
-
-function save(){
-  if(saveMode){
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }
-}
-
 function addTask(){
-  const text = document.getElementById("taskInput").value;
-  const energy = document.getElementById("energy").value;
+  const text=document.getElementById("taskInput").value;
+  const energy=document.getElementById("energy").value;
 
   if(text.trim()){
     tasks.push({text,energy});
     document.getElementById("taskInput").value="";
     render();
-    save();
   }
 }
-
-function deleteTask(i){
-  tasks.splice(i,1);
-  render();
-  save();
-}
-function particles(){
-  for(let i=0;i<20;i++){
-    const p=document.createElement("div");
-    p.className="particle";
-    p.style.left=Math.random()*window.innerWidth+"px";
-    p.style.top="60%";
-    p.style.background=["#f472b6","#a78bfa","#34d399","#facc15"][Math.floor(Math.random()*4)];
-document.body.appendChild(p);
-
-    setTimeout(()=>p.remove(),800);
-  }
 
 function render(){
-  const list = document.getElementById("taskList");
+  const list=document.getElementById("taskList");
   list.innerHTML="";
 
   tasks.forEach((t,i)=>{
@@ -359,50 +300,55 @@ function render(){
   });
 }
 
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
+}
+
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
-  const energyLevel = document.getElementById("energy").value;
+  const ball=document.getElementById("ball");
+  const result=document.getElementById("result");
 
-  let pool = [];
+  ball.classList.add("pulse");
 
-  if(energyLevel === "low") pool = tasks.filter(t=>t.energy==="low");
-  if(energyLevel === "medium") pool = tasks.filter(t=>t.energy!=="high");
-  if(energyLevel === "high") pool = tasks;
-
-  if(pool.length===0) pool = tasks;
-
-  const ball = document.getElementById("ball");
-  const result = document.getElementById("result");
-
-  ball.classList.add("active","pulse");
-  result.classList.remove("show");
-
-  // ✧ vibration
   if(navigator.vibrate) navigator.vibrate(40);
-
-  // ✧ sound
   document.getElementById("popSound").play();
 
   setTimeout(()=>{
-    const choice = pool[Math.floor(Math.random()*pool.length)];
-    result.textContent = "👉 " + choice.text;
-
+    const choice=tasks[Math.floor(Math.random()*tasks.length)];
+    result.textContent="👉 "+choice.text;
     result.classList.add("show");
-    ball.classList.remove("active","pulse");
-
-    particles(); // ✧ burst
-  }, 500);
+    ball.classList.remove("pulse");
+    particles();
+  },400);
 }
+
+function completeTask(){
+  streak++;
+  localStorage.setItem("streak",streak);
+  updateStreak();
+
+  if(navigator.vibrate) navigator.vibrate([100,50,150]);
+  particles();
+}
+
+function particles(){
+  for(let i=0;i<20;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+    p.style.left=Math.random()*window.innerWidth+"px";
+    p.style.top="60%";
+    p.style.background=["#f472b6","#a78bfa","#34d399","#facc15"][Math.floor(Math.random()*4)];
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),800);
+  }
+}
+
+updateStreak();
 render();
-document.getElementById("switch").classList.toggle("active", saveMode);
-
-/* SERVICE WORKER */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
 </script>
 
-    
 </body>
 </html>
