@@ -51,6 +51,18 @@ h1 {
   -webkit-text-fill-color:transparent;
 }
 
+/* INSTRUCTIONS */
+.instructions{
+  width:85%;max-width:400px;
+  margin:12px auto;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.05);
+  cursor:pointer;
+}
+.instructions p{display:none;text-align:left;font-size:0.9rem;}
+.instructions.active p{display:block;}
+
 /* INPUT */
 input,select{
   width:85%;max-width:400px;
@@ -86,7 +98,6 @@ button{
   50%{transform:scale(1.03);}
 }
 
-/* ✧ DECIDE ANIMATION */
 .ball.deciding{
   animation:decideSpin 0.9s linear infinite;
 }
@@ -97,15 +108,12 @@ button{
   100%{transform:rotate(360deg) scale(1);}
 }
 
-/* ✧ DONE BURST */
 .ball.donePulse{
   animation:donePulse 0.5s ease;
 }
 
 @keyframes donePulse{
-  0%{transform:scale(1);}
   50%{transform:scale(1.12);}
-  100%{transform:scale(1);}
 }
 
 .inner{
@@ -123,16 +131,9 @@ button{
   font-weight:bold;
 }
 
-/* DONE TEXT */
 .done {
   font-size:20px;
   color:#34d399;
-  animation:pop 0.4s ease;
-}
-
-@keyframes pop {
-  0% { transform: scale(0.6) rotate(-45deg); opacity: 0; }
-  100% { transform: scale(1) rotate(-45deg); opacity: 1; }
 }
 
 /* CONFETTI */
@@ -150,20 +151,20 @@ button{
   }
 }
 
-/* TASKS */
+/* TASKS LEFT ALIGNED */
 li{
   margin:12px auto;
   background:#222;
   padding:16px;
   border-radius:16px;
   max-width:320px;
-  display:grid;
-  grid-template-columns: 1fr auto;
+  display:flex;
+  justify-content:space-between;
   align-items:center;
 }
 
 .task-text{
-  text-align:center;
+  text-align:left;
 }
 
 .delete-btn{
@@ -174,7 +175,20 @@ li{
   color:white;
 }
 
-/* DRAWER */
+/* SAVE TOGGLE */
+.switch{
+  width:40px;height:20px;
+  background:#555;border-radius:20px;
+  margin:10px auto;position:relative;
+}
+.switch::after{
+  content:"";width:16px;height:16px;background:white;
+  position:absolute;top:2px;left:2px;border-radius:50%;
+  transition:0.2s;
+}
+.switch.active{background:#7c3aed;}
+.switch.active::after{left:22px;}
+
 .drawer{
   position:fixed;
   bottom:0;
@@ -194,14 +208,12 @@ li{
   border-radius:10px;
 }
 
-/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.5);
   opacity:0;
   pointer-events:none;
-  transition:0.2s;
 }
 .overlay.active{
   opacity:1;
@@ -216,10 +228,20 @@ li{
 <body>
 
 <div class="header">
-  <div class="header-ball">
-    <div class="header-core"></div>
-  </div>
+  <div class="header-ball"><div class="header-core"></div></div>
   <h1>Magic Dopamine Ball</h1>
+</div>
+
+<!-- INSTRUCTIONS -->
+<div class="instructions" onclick="this.classList.toggle('active')">
+ℹ️ How to use
+<p>
+Add tasks + assign energy.<br><br>
+Set your current energy level.<br><br>
+Press decide → follow it.<br><br>
+Tap "I did it" → build streak.<br><br>
+Turn on save to keep tasks.
+</p>
 </div>
 
 <input id="taskInput" placeholder="Add task">
@@ -247,13 +269,31 @@ li{
 
 <div class="drawer" id="drawer">
   <div class="handle" onclick="openDrawer()"></div>
+
+  <div>💾 Save tasks</div>
+  <div id="switch" class="switch" onclick="toggleSave()"></div>
+
   <ul id="taskList"></ul>
 </div>
 
 <script>
-let tasks=[];
+let saveMode = localStorage.getItem("saveMode") === "true";
+let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
 let lastChoiceIndex=null;
-let streak=0;
+let streak=parseInt(localStorage.getItem("streak"))||0;
+
+function toggleSave(){
+  saveMode=!saveMode;
+  switchEl.classList.toggle("active",saveMode);
+  localStorage.setItem("saveMode",saveMode);
+  save();
+}
+
+function save(){
+  if(saveMode){
+    localStorage.setItem("tasks",JSON.stringify(tasks));
+  }
+}
 
 function addTask(){
   const text=taskInput.value;
@@ -261,6 +301,7 @@ function addTask(){
     tasks.push({text});
     taskInput.value="";
     render();
+    save();
   }
 }
 
@@ -279,6 +320,7 @@ function render(){
 function deleteTask(i){
   tasks.splice(i,1);
   render();
+  save();
 }
 
 function decide(){
@@ -289,9 +331,7 @@ function decide(){
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
     lastChoiceIndex=index;
-
     result.textContent="👉 "+tasks[index].text;
-
     ball.classList.remove("deciding");
   },900);
 }
@@ -301,20 +341,19 @@ function completeTask(){
     tasks.splice(lastChoiceIndex,1);
     lastChoiceIndex=null;
     render();
+    save();
   }
 
   streak++;
+  localStorage.setItem("streak",streak);
   streakEl.textContent="🔥 Streak: "+streak;
 
   result.textContent="✨ DONE ✨";
-  result.classList.add("done");
-
   ball.classList.add("donePulse");
 
   confettiBurst();
 
   setTimeout(()=>{
-    result.classList.remove("done");
     ball.classList.remove("donePulse");
     result.textContent="Ask me…";
   },1000);
@@ -324,18 +363,11 @@ function confettiBurst(){
   for(let i=0;i<30;i++){
     const c=document.createElement("div");
     c.className="confetti";
-
-    const x=(Math.random()-0.5)*400+"px";
-    const y=(Math.random()-0.5)*500+"px";
-
-    c.style.setProperty('--x',x);
-    c.style.setProperty('--y',y);
-
+    c.style.setProperty('--x',(Math.random()-0.5)*400+"px");
+    c.style.setProperty('--y',(Math.random()-0.5)*500+"px");
     c.style.left=window.innerWidth/2+"px";
     c.style.top="60%";
-
     c.style.background=["#f472b6","#34d399","#facc15","#a78bfa"][Math.floor(Math.random()*4)];
-
     document.body.appendChild(c);
     setTimeout(()=>c.remove(),1000);
   }
@@ -357,8 +389,11 @@ const taskInput=document.getElementById("taskInput");
 const result=document.getElementById("result");
 const ball=document.getElementById("ball");
 const streakEl=document.getElementById("streak");
+const switchEl=document.getElementById("switch");
 
+switchEl.classList.toggle("active", saveMode);
 render();
+streakEl.textContent="🔥 Streak: "+streak;
 </script>
 
 </body>
