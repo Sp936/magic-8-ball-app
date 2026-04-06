@@ -9,163 +9,105 @@
 
 <style>
 body {
-  margin: 0;
-  font-family: 'Segoe UI';
+  margin:0;
+  font-family:'Segoe UI';
   background: radial-gradient(circle at top,#140033,#000);
-  color: #fff;
-  text-align: center;
+  color:#fff;
+  text-align:center;
 }
 
 /* ✧ HEADER */
 .header-ball {
-  width: 100px;
-  height: 100px;
-  margin: 20px auto 10px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #222, #000);
-  box-shadow: 0 0 40px rgba(124,58,237,0.9);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:100px;height:100px;margin:20px auto;
+  border-radius:50%;
+  background: radial-gradient(circle,#222,#000);
+  box-shadow:0 0 40px rgba(124,58,237,1);
+  display:flex;align-items:center;justify-content:center;
 }
-
 .header-inner {
-  width:50px;
-  height:50px;
+  width:50px;height:50px;
   background:linear-gradient(135deg,#6366f1,#c084fc);
   transform:rotate(45deg);
   border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
+}
+.header-inner span{transform:rotate(-45deg);font-weight:bold;}
+
+input,select{
+  width:85%;max-width:400px;padding:14px;margin:8px;
+  border-radius:14px;border:none;
+  background:rgba(255,255,255,0.1);color:#fff;
 }
 
-.header-inner span {
-  transform:rotate(-45deg);
-  font-weight:bold;
-}
-
-h1 { font-size:1.8rem; }
-
-/* ✧ INPUTS */
-input, select {
-  width: 85%;
-  max-width: 400px;
-  padding: 14px;
-  margin: 8px;
-  border-radius: 14px;
-  border: none;
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-}
-
-button {
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(135deg,#7c3aed,#ec4899);
-  color: white;
-  margin: 6px;
+button{
+  padding:14px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#7c3aed,#ec4899);
+  color:#fff;margin:6px;
 }
 
 /* ✧ BALL */
-.ball {
-  width: 220px;
-  height: 220px;
-  margin: 20px auto;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%,#1a1a1a,#000);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow: 0 0 80px rgba(124,58,237,1);
+.ball{
+  width:220px;height:220px;margin:20px auto;
+  border-radius:50%;
+  background:radial-gradient(circle,#1a1a1a,#000);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 80px rgba(124,58,237,1);
 }
+.ball.pulse{box-shadow:0 0 120px rgba(236,72,153,1);}
 
-.ball.pulse { box-shadow:0 0 120px rgba(236,72,153,1); }
-
-.inner {
-  width: 110px;
-  height: 110px;
-  background: linear-gradient(135deg,#6366f1,#c084fc);
-  transform: rotate(45deg);
-  border-radius: 20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.inner{
+  width:110px;height:110px;
+  background:linear-gradient(135deg,#6366f1,#c084fc);
+  transform:rotate(45deg);
+  border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
 }
+#result{transform:rotate(-45deg);font-weight:bold;}
 
-#result {
-  transform: rotate(-45deg);
-  font-weight: bold;
-}
-
-/* ✧ INSTRUCTIONS */
-.instructions {
-  width:85%;
-  max-width:400px;
-  margin:10px auto;
-  padding:10px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.05);
-  cursor:pointer;
-}
-
-.instructions p { display:none; }
-.instructions.active p { display:block; }
-
-/* ✧ DRAWER (highlighted) */
-.drawer {
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:#111;
-  border-radius:20px 20px 0 0;
-  padding:15px;
-  transform:translateY(75%);
+/* ✧ DRAWER */
+.drawer{
+  position:fixed;bottom:0;width:100%;
+  background:#111;border-radius:20px 20px 0 0;
+  padding:15px;transform:translateY(75%);
   transition:0.3s;
   box-shadow:0 -5px 40px rgba(236,72,153,0.7);
 }
+.drawer.open{transform:translateY(0);}
 
-.drawer.open { transform:translateY(0); }
-
-.handle {
-  width:60px;
-  height:6px;
+.handle{
+  width:60px;height:6px;
   background:linear-gradient(90deg,#7c3aed,#ec4899);
-  border-radius:10px;
-  margin:0 auto 10px;
-  box-shadow:0 0 10px rgba(236,72,153,1);
+  margin:0 auto 10px;border-radius:10px;
 }
 
-li {
-  display:flex;
-  justify-content:space-between;
-  margin:6px;
-  background:#222;
-  padding:10px;
+li{
+  display:flex;justify-content:space-between;
+  margin:6px;background:#222;padding:10px;
   border-radius:10px;
 }
 
-.streak {
-  margin-top:8px;
-  color:#ff9edb;
-  font-weight:600;
+.switch{
+  width:40px;height:20px;background:#555;
+  border-radius:20px;margin:10px auto;position:relative;
 }
-
-/* ✧ particles */
-.particle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  animation: rise 0.8s linear forwards;
+.switch::after{
+  content:"";width:16px;height:16px;background:white;
+  position:absolute;top:2px;left:2px;border-radius:50%;
+  transition:0.2s;
 }
+.switch.active{background:#7c3aed;}
+.switch.active::after{left:22px;}
 
-@keyframes rise {
-  from { opacity:1; transform:translateY(0); }
-  to { opacity:0; transform:translateY(-80px); }
+.streak{color:#ff9edb;margin-top:10px;}
+
+.particle{
+  position:fixed;width:6px;height:6px;border-radius:50%;
+  animation:rise 0.8s linear forwards;
 }
-
+@keyframes rise{
+  from{opacity:1}
+  to{transform:translateY(-80px);opacity:0}
+}
 </style>
 </head>
 
@@ -176,11 +118,6 @@ li {
 </div>
 
 <h1>Magic Dopamine Ball</h1>
-
-<div class="instructions" onclick="this.classList.toggle('active')">
-ℹ️ How to use
-<p>Add tasks → choose energy → follow the result.</p>
-</div>
 
 <input id="taskInput" placeholder="Add task">
 
@@ -203,22 +140,39 @@ li {
 
 <div class="streak" id="streak">🔥 Streak: 0</div>
 
+<!-- ✧ DRAWER -->
 <div class="drawer" id="drawer">
   <div class="handle"></div>
+
+  <div>💾 Save tasks</div>
+  <div id="switch" class="switch" onclick="toggleSave()"></div>
+
   <ul id="taskList"></ul>
 </div>
 
 <audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
 <script>
-let tasks = [];
+let saveMode = localStorage.getItem("saveMode") === "true";
+let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
 let lastChoiceIndex = null;
 let streak = parseInt(localStorage.getItem("streak")) || 0;
 
-function updateStreak(){
-  document.getElementById("streak").textContent = "🔥 Streak: " + streak;
+/* ✧ SAVE */
+function toggleSave(){
+  saveMode = !saveMode;
+  switchEl.classList.toggle("active", saveMode);
+  localStorage.setItem("saveMode", saveMode);
+  save();
 }
 
+function save(){
+  if(saveMode){
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+}
+
+/* ✧ TASKS */
 function addTask(){
   const text = taskInput.value;
   const energy = energy.value;
@@ -226,7 +180,14 @@ function addTask(){
     tasks.push({text,energy});
     taskInput.value="";
     render();
+    save();
   }
+}
+
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
+  save();
 }
 
 function render(){
@@ -238,38 +199,34 @@ function render(){
   });
 }
 
-function deleteTask(i){
-  tasks.splice(i,1);
-  render();
-}
-
+/* ✧ DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
-  const ball=document.getElementById("ball");
   ball.classList.add("pulse");
 
-  document.getElementById("popSound").play();
+  popSound.play();
   if(navigator.vibrate) navigator.vibrate(40);
 
   setTimeout(()=>{
-    const index = Math.floor(Math.random()*tasks.length);
-    const choice = tasks[index];
+    const index=Math.floor(Math.random()*tasks.length);
+    const choice=tasks[index];
 
-    lastChoiceIndex = index;
-
+    lastChoiceIndex=index;
     result.textContent="👉 "+choice.text;
-    ball.classList.remove("pulse");
 
+    ball.classList.remove("pulse");
     particles();
   },400);
 }
 
+/* ✧ COMPLETE */
 function completeTask(){
-  if(lastChoiceIndex !== null){
+  if(lastChoiceIndex!==null){
     tasks.splice(lastChoiceIndex,1);
-    lastChoiceIndex = null;
+    lastChoiceIndex=null;
     render();
+    save();
   }
 
   streak++;
@@ -280,6 +237,11 @@ function completeTask(){
   particles();
 }
 
+function updateStreak(){
+  streakEl.textContent="🔥 Streak: "+streak;
+}
+
+/* ✧ PARTICLES */
 function particles(){
   for(let i=0;i<20;i++){
     const p=document.createElement("div");
@@ -292,23 +254,27 @@ function particles(){
   }
 }
 
-/* ✧ swipe drawer */
+/* ✧ SWIPE */
 let startY=0;
-
-drawer.addEventListener("touchstart",e=>{
-  startY=e.touches[0].clientY;
-});
-
+drawer.addEventListener("touchstart",e=>startY=e.touches[0].clientY);
 drawer.addEventListener("touchmove",e=>{
-  let currentY=e.touches[0].clientY;
-  let diff=currentY-startY;
-
-  if(diff < -50) drawer.classList.add("open");
-  if(diff > 50) drawer.classList.remove("open");
+  let diff=e.touches[0].clientY-startY;
+  if(diff<-50) drawer.classList.add("open");
+  if(diff>50) drawer.classList.remove("open");
 });
 
-updateStreak();
+/* ✧ INIT */
+const switchEl=document.getElementById("switch");
+const taskList=document.getElementById("taskList");
+const taskInput=document.getElementById("taskInput");
+const result=document.getElementById("result");
+const ball=document.getElementById("ball");
+const popSound=document.getElementById("popSound");
+const streakEl=document.getElementById("streak");
+
+switchEl.classList.toggle("active", saveMode);
 render();
+updateStreak();
 </script>
 
 </body>
