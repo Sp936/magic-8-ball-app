@@ -13,7 +13,7 @@ body {
   text-align:center;
 }
 
-/* ✧ HEADER UPGRADE */
+/* HEADER */
 .header {
   display:flex;
   justify-content:center;
@@ -23,14 +23,11 @@ body {
 }
 
 .header-ball {
-  width:70px;
-  height:70px;
+  width:70px;height:70px;
   border-radius:50%;
   background: radial-gradient(circle,#1a1a1a,#000);
   box-shadow:0 0 30px #7c3aed, 0 0 60px #ec4899;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   animation:float 4s ease-in-out infinite;
 }
 
@@ -39,10 +36,8 @@ body {
   50%{transform:translateY(-6px);}
 }
 
-/* ✧ mystical core */
 .header-core {
-  width:30px;
-  height:30px;
+  width:30px;height:30px;
   border-radius:50%;
   background:radial-gradient(circle,#c084fc,#6366f1);
   box-shadow:0 0 20px #c084fc;
@@ -54,7 +49,6 @@ h1 {
   background:linear-gradient(90deg,#fff,#f472b6,#fff);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  letter-spacing:0.5px;
 }
 
 /* INPUT */
@@ -75,22 +69,43 @@ button{
   margin:6px;
 }
 
-/* ✧ BALL UPGRADE */
+/* BALL */
 .ball{
   width:230px;height:230px;
   margin:25px auto;
   border-radius:50%;
   background:radial-gradient(circle,#0a0a0a,#000);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:
-    0 0 60px rgba(124,58,237,1),
-    0 0 120px rgba(236,72,153,0.6);
+  box-shadow:0 0 60px rgba(124,58,237,1),
+             0 0 120px rgba(236,72,153,0.6);
   animation:breath 4s ease-in-out infinite;
 }
 
 @keyframes breath{
   0%,100%{transform:scale(1);}
   50%{transform:scale(1.03);}
+}
+
+/* ✧ DECIDE ANIMATION */
+.ball.deciding{
+  animation:decideSpin 0.9s linear infinite;
+}
+
+@keyframes decideSpin{
+  0%{transform:rotate(0deg) scale(1);}
+  50%{transform:rotate(180deg) scale(1.05);}
+  100%{transform:rotate(360deg) scale(1);}
+}
+
+/* ✧ DONE BURST */
+.ball.donePulse{
+  animation:donePulse 0.5s ease;
+}
+
+@keyframes donePulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.12);}
+  100%{transform:scale(1);}
 }
 
 .inner{
@@ -108,36 +123,49 @@ button{
   font-weight:bold;
 }
 
-/* DONE */
+/* DONE TEXT */
 .done {
   font-size:20px;
   color:#34d399;
   animation:pop 0.4s ease;
 }
+
 @keyframes pop {
   0% { transform: scale(0.6) rotate(-45deg); opacity: 0; }
   100% { transform: scale(1) rotate(-45deg); opacity: 1; }
 }
 
-/* ✧ TASKS PERFECTLY CENTRED */
+/* CONFETTI */
+.confetti{
+  position:fixed;
+  width:8px;height:8px;
+  border-radius:2px;
+  animation:confettiFall 1s forwards;
+}
+
+@keyframes confettiFall{
+  to{
+    transform:translate(var(--x), var(--y)) rotate(720deg);
+    opacity:0;
+  }
+}
+
+/* TASKS */
 li{
   margin:12px auto;
   background:#222;
   padding:16px;
   border-radius:16px;
   max-width:320px;
-
   display:grid;
   grid-template-columns: 1fr auto;
   align-items:center;
 }
 
-/* true visual centre */
 .task-text{
   text-align:center;
 }
 
-/* delete sits separately */
 .delete-btn{
   background:linear-gradient(135deg,#7c3aed,#ec4899);
   border:none;
@@ -256,16 +284,22 @@ function deleteTask(i){
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
+  ball.classList.add("deciding");
+
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
     lastChoiceIndex=index;
+
     result.textContent="👉 "+tasks[index].text;
-  },500);
+
+    ball.classList.remove("deciding");
+  },900);
 }
 
 function completeTask(){
   if(lastChoiceIndex!==null){
     tasks.splice(lastChoiceIndex,1);
+    lastChoiceIndex=null;
     render();
   }
 
@@ -275,10 +309,36 @@ function completeTask(){
   result.textContent="✨ DONE ✨";
   result.classList.add("done");
 
+  ball.classList.add("donePulse");
+
+  confettiBurst();
+
   setTimeout(()=>{
     result.classList.remove("done");
+    ball.classList.remove("donePulse");
     result.textContent="Ask me…";
   },1000);
+}
+
+function confettiBurst(){
+  for(let i=0;i<30;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+
+    const x=(Math.random()-0.5)*400+"px";
+    const y=(Math.random()-0.5)*500+"px";
+
+    c.style.setProperty('--x',x);
+    c.style.setProperty('--y',y);
+
+    c.style.left=window.innerWidth/2+"px";
+    c.style.top="60%";
+
+    c.style.background=["#f472b6","#34d399","#facc15","#a78bfa"][Math.floor(Math.random()*4)];
+
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1000);
+  }
 }
 
 function openDrawer(){
@@ -295,6 +355,7 @@ const overlay=document.getElementById("overlay");
 const taskList=document.getElementById("taskList");
 const taskInput=document.getElementById("taskInput");
 const result=document.getElementById("result");
+const ball=document.getElementById("ball");
 const streakEl=document.getElementById("streak");
 
 render();
