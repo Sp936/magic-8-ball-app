@@ -4,9 +4,6 @@
   <title>Magic Dopamine Ball ✨</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#7c3aed">
-
 <style>
 body {
   margin:0;
@@ -16,7 +13,7 @@ body {
   text-align:center;
 }
 
-/* HEADER */
+/* ✧ HEADER */
 .header {
   display:flex;
   justify-content:center;
@@ -49,7 +46,7 @@ body {
 
 h1 { font-size:1.8rem; }
 
-/* INPUT */
+/* ✧ INPUT */
 input,select{
   width:85%;max-width:400px;
   padding:14px;margin:8px;
@@ -67,7 +64,17 @@ button{
   margin:6px;
 }
 
-/* BALL */
+/* ✧ INSTRUCTIONS */
+.instructions{
+  width:85%;max-width:400px;margin:10px auto;
+  padding:12px;border-radius:12px;
+  background:rgba(255,255,255,0.05);
+  cursor:pointer;
+}
+.instructions p{display:none;text-align:left;font-size:0.9rem;}
+.instructions.active p{display:block;}
+
+/* ✧ BALL */
 .ball{
   width:220px;height:220px;
   margin:20px auto;
@@ -75,8 +82,18 @@ button{
   background:radial-gradient(circle,#1a1a1a,#000);
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 80px rgba(124,58,237,1);
+  transition:0.3s;
 }
-.ball.pulse{box-shadow:0 0 120px rgba(236,72,153,1);}
+
+.ball.deciding{
+  animation:spinGlow 1s linear infinite;
+}
+
+@keyframes spinGlow{
+  0%{transform:rotate(0deg);box-shadow:0 0 60px #7c3aed;}
+  50%{box-shadow:0 0 120px #ec4899;}
+  100%{transform:rotate(360deg);box-shadow:0 0 60px #7c3aed;}
+}
 
 .inner{
   width:110px;height:110px;
@@ -85,20 +102,76 @@ button{
   border-radius:20px;
   display:flex;align-items:center;justify-content:center;
 }
-#result{transform:rotate(-45deg);font-weight:bold;}
 
-/* DONE animation */
-.done {
-  font-size:20px;
-  color:#34d399;
-  animation:pop 0.4s ease;
-}
-@keyframes pop {
-  0% { transform: scale(0.6) rotate(-45deg); opacity: 0; }
-  100% { transform: scale(1) rotate(-45deg); opacity: 1; }
+#result{
+  transform:rotate(-45deg);
+  font-weight:bold;
 }
 
-/* OVERLAY */
+/* ✧ CONFETTI */
+.confetti{
+  position:fixed;
+  width:8px;height:8px;
+  background:red;
+  animation:explode 1s forwards;
+}
+
+@keyframes explode{
+  to{
+    transform:translate(var(--x), var(--y)) rotate(720deg);
+    opacity:0;
+  }
+}
+
+/* ✧ DRAWER */
+.drawer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#111;
+  border-radius:20px 20px 0 0;
+  padding:15px;
+  transform:translateY(calc(100% - 80px));
+  transition:0.3s;
+}
+
+.drawer.open{ transform:translateY(0); }
+
+.handle{
+  width:80px;height:8px;
+  background:linear-gradient(90deg,#7c3aed,#ec4899);
+  margin:0 auto 12px;
+  border-radius:10px;
+}
+
+li{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  margin:10px auto;
+  background:#222;
+  padding:14px;
+  border-radius:14px;
+  max-width:350px;
+}
+
+.task-text{
+  width:100%;
+  text-align:center;
+}
+
+.delete-btn{
+  position:absolute;
+  right:10px;
+  background:linear-gradient(135deg,#7c3aed,#ec4899);
+  border:none;
+  border-radius:10px;
+  padding:6px 10px;
+  color:white;
+}
+
+/* ✧ OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
@@ -112,83 +185,8 @@ button{
   pointer-events:auto;
 }
 
-/* DRAWER */
-.drawer{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:#111;
-  border-radius:20px 20px 0 0;
-  padding:15px;
-  transform:translateY(calc(100% - 80px));
-  transition:0.3s;
-  box-shadow:0 -5px 40px rgba(236,72,153,0.7);
-}
-.drawer.open{ transform:translateY(0); }
-
-.handle{
-  width:80px;height:8px;
-  background:linear-gradient(90deg,#7c3aed,#ec4899);
-  margin:0 auto 12px;
-  border-radius:10px;
-}
-
-/* ✧ TASKS FIXED */
-li{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  margin:10px auto;
-  background:#222;
-  padding:14px;
-  border-radius:14px;
-  max-width:350px;
-}
-
-/* centered text */
-.task-text{
-  text-align:center;
-  width:100%;
-}
-
-/* delete button floats right */
-.delete-btn{
-  position:absolute;
-  right:10px;
-  top:50%;
-  transform:translateY(-50%);
-  background:linear-gradient(135deg,#7c3aed,#ec4899);
-  border:none;
-  border-radius:10px;
-  padding:6px 10px;
-  color:white;
-}
-
-.switch{
-  width:40px;height:20px;
-  background:#555;border-radius:20px;
-  margin:10px auto;position:relative;
-}
-.switch::after{
-  content:"";width:16px;height:16px;background:white;
-  position:absolute;top:2px;left:2px;border-radius:50%;
-  transition:0.2s;
-}
-.switch.active{background:#7c3aed;}
-.switch.active::after{left:22px;}
-
 .streak{color:#ff9edb;margin-top:10px;}
 
-.particle{
-  position:fixed;width:6px;height:6px;
-  border-radius:50%;
-  animation:rise 0.8s linear forwards;
-}
-@keyframes rise{
-  from{opacity:1}
-  to{transform:translateY(-80px);opacity:0}
-}
 </style>
 </head>
 
@@ -199,6 +197,26 @@ li{
     <div class="header-inner"><span>8</span></div>
   </div>
   <h1>Magic Dopamine Ball</h1>
+</div>
+
+<!-- ✧ FULL INSTRUCTIONS -->
+<div class="instructions" onclick="this.classList.toggle('active')">
+ℹ️ How to use
+<p>
+Add tasks and assign energy:<br><br>
+
+💤 Low → very easy (minimal effort)<br>
+⚡ Medium → some effort<br>
+🔥 High → more demanding<br><br>
+
+Before pressing decide, set the dropdown to your <strong>current energy</strong>.<br><br>
+
+The ball will choose something you can actually handle right now.<br><br>
+
+Tap "I did it" when complete → build your streak.<br><br>
+
+Swipe up to manage tasks.
+</p>
 </div>
 
 <input id="taskInput" placeholder="Add task">
@@ -226,56 +244,22 @@ li{
 
 <div class="drawer" id="drawer">
   <div class="handle" onclick="openDrawer()"></div>
-
-  <div>💾 Save tasks</div>
-  <div id="switch" class="switch" onclick="toggleSave()"></div>
-
   <ul id="taskList"></ul>
 </div>
 
 <script>
-let saveMode = localStorage.getItem("saveMode") === "true";
-let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
+let tasks=[];
 let lastChoiceIndex=null;
-let streak=parseInt(localStorage.getItem("streak"))||0;
+let streak=0;
 
-function openDrawer(){
-  drawer.classList.add("open");
-  overlay.classList.add("active");
-}
-function closeDrawer(){
-  drawer.classList.remove("open");
-  overlay.classList.remove("active");
-}
-
-function toggleSave(){
-  saveMode=!saveMode;
-  switchEl.classList.toggle("active",saveMode);
-  localStorage.setItem("saveMode",saveMode);
-  save();
-}
-function save(){
-  if(saveMode){
-    localStorage.setItem("tasks",JSON.stringify(tasks));
-  }
-}
-
+/* TASKS */
 function addTask(){
-  const text=document.getElementById("taskInput").value;
-  const energy=document.getElementById("energySelect").value;
-
+  const text=taskInput.value;
   if(text.trim()){
-    tasks.push({text,energy});
-    document.getElementById("taskInput").value="";
+    tasks.push({text});
+    taskInput.value="";
     render();
-    save();
   }
-}
-
-function deleteTask(i){
-  tasks.splice(i,1);
-  render();
-  save();
 }
 
 function render(){
@@ -290,68 +274,81 @@ function render(){
   });
 }
 
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
+}
+
+/* DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
-  ball.classList.add("pulse");
+  ball.classList.add("deciding");
 
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
     lastChoiceIndex=index;
+
     result.textContent="👉 "+tasks[index].text;
-    ball.classList.remove("pulse");
-    particles();
-  },400);
-}
-
-function completeTask(){
-  if(lastChoiceIndex!==null){
-    tasks.splice(lastChoiceIndex,1);
-    lastChoiceIndex=null;
-    render();
-    save();
-  }
-
-  streak++;
-  localStorage.setItem("streak",streak);
-  streakEl.textContent="🔥 Streak: "+streak;
-
-  result.textContent="✨ DONE ✨";
-  result.classList.add("done");
-
-  ball.classList.add("pulse");
-
-  particles(40);
-
-  setTimeout(()=>{
-    result.classList.remove("done");
-    ball.classList.remove("pulse");
-    result.textContent="Ask me…";
+    ball.classList.remove("deciding");
   },1000);
 }
 
-function particles(amount=20){
-  for(let i=0;i<amount;i++){
-    const p=document.createElement("div");
-    p.className="particle";
-    p.style.left=Math.random()*window.innerWidth+"px";
-    p.style.top="60%";
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),800);
+/* COMPLETE */
+function completeTask(){
+  if(lastChoiceIndex!==null){
+    tasks.splice(lastChoiceIndex,1);
+    render();
   }
+
+  streak++;
+  streakEl.textContent="🔥 Streak: "+streak;
+
+  result.textContent="✨ DONE ✨";
+
+  confettiBurst();
+}
+
+/* ✧ CONFETTI */
+function confettiBurst(){
+  for(let i=0;i<40;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+
+    const x=(Math.random()-0.5)*400+"px";
+    const y=(Math.random()-0.5)*400+"px";
+
+    c.style.setProperty('--x',x);
+    c.style.setProperty('--y',y);
+    c.style.left=window.innerWidth/2+"px";
+    c.style.top="60%";
+
+    c.style.background=["#f472b6","#34d399","#facc15","#a78bfa"][Math.floor(Math.random()*4)];
+
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1000);
+  }
+}
+
+/* DRAWER */
+function openDrawer(){
+  drawer.classList.add("open");
+  overlay.classList.add("active");
+}
+function closeDrawer(){
+  drawer.classList.remove("open");
+  overlay.classList.remove("active");
 }
 
 const drawer=document.getElementById("drawer");
 const overlay=document.getElementById("overlay");
-const switchEl=document.getElementById("switch");
 const taskList=document.getElementById("taskList");
+const taskInput=document.getElementById("taskInput");
 const result=document.getElementById("result");
 const ball=document.getElementById("ball");
 const streakEl=document.getElementById("streak");
 
-switchEl.classList.toggle("active", saveMode);
 render();
-streakEl.textContent="🔥 Streak: "+streak;
 </script>
 
 </body>
