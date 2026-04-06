@@ -31,7 +31,8 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:16px;
+  gap:18px;
+  padding-top:10px;
 }
 
 .middle{
@@ -54,6 +55,7 @@ body{
   display:flex;
   align-items:center;
   gap:14px;
+  margin-bottom:4px;
 }
 
 .header-ball{
@@ -87,8 +89,14 @@ h1{
   background:rgba(255,255,255,0.06);
   cursor:pointer;
 }
-.instructions p{display:none;font-size:0.9rem;line-height:1.5;}
-.instructions.active p{display:block;}
+.instructions p{
+  display:none;
+  font-size:0.92rem;
+  line-height:1.5;
+}
+.instructions.active p{
+  display:block;
+}
 
 /* ✧ INPUT */
 input,select{
@@ -139,11 +147,10 @@ button{
   100%{transform:rotate(0) scale(1);}
 }
 
-/* ✧ DONE PULSE */
+/* ✧ DONE */
 .ball.donePulse{
   animation:donePulse 0.5s ease;
 }
-
 @keyframes donePulse{
   50%{transform:scale(1.2);}
 }
@@ -161,21 +168,6 @@ button{
   font-weight:bold;
 }
 
-/* ✧ CONFETTI */
-.confetti{
-  position:fixed;
-  width:8px;height:8px;
-  border-radius:2px;
-  animation:fall 1s forwards;
-}
-
-@keyframes fall{
-  to{
-    transform:translate(var(--x), var(--y)) rotate(720deg);
-    opacity:0;
-  }
-}
-
 /* ✧ TASKS */
 li{
   margin:10px auto;
@@ -188,11 +180,26 @@ li{
 }
 
 .task-text{text-align:left;}
+
 .delete-btn{
   background:#ec4899;
   border:none;
   border-radius:8px;
   padding:6px 10px;
+}
+
+/* ✧ CONFETTI */
+.confetti{
+  position:fixed;
+  width:8px;height:8px;
+  border-radius:2px;
+  animation:fall 1s forwards;
+}
+@keyframes fall{
+  to{
+    transform:translate(var(--x), var(--y)) rotate(720deg);
+    opacity:0;
+  }
 }
 
 /* ✧ DRAWER */
@@ -227,7 +234,7 @@ li{
   pointer-events:auto;
 }
 
-/* ✧ SAVE SWITCH */
+/* ✧ SAVE */
 .switch{
   width:40px;height:20px;
   background:#555;
@@ -298,10 +305,8 @@ Don’t question the choice. Just count down from 3 and move.
 </p>
 </div>
 
-<div id="dopamineHint" style="opacity:0.7;font-size:0.9rem;margin-top:-6px;"></div>
+<div id="dopamineHint" style="opacity:0.7;font-size:0.9rem;"></div>
 
-</p>
-</div>
 <input id="taskInput" placeholder="Add task">
 
 <select id="energySelect">
@@ -354,7 +359,6 @@ function toggleSave(){
   localStorage.setItem("saveMode",saveMode);
   save();
 }
-
 function save(){
   if(saveMode){
     localStorage.setItem("tasks",JSON.stringify(tasks));
@@ -371,19 +375,15 @@ function addTask(){
     save();
   }
 }
-
 function render(){
   taskList.innerHTML="";
   tasks.forEach((t,i)=>{
     const li=document.createElement("li");
-    li.innerHTML=`
-      <span class="task-text">${t.text}</span>
-      <button class="delete-btn" onclick="deleteTask(${i})">✕</button>
-    `;
+    li.innerHTML=`<span class="task-text">${t.text}</span>
+    <button class="delete-btn" onclick="deleteTask(${i})">✕</button>`;
     taskList.appendChild(li);
   });
 }
-
 function deleteTask(i){
   tasks.splice(i,1);
   render();
@@ -393,9 +393,9 @@ function deleteTask(i){
 /* ✧ DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
-if(navigator.vibrate) navigator.vibrate(40);
 
   ball.classList.add("deciding");
+  if(navigator.vibrate) navigator.vibrate(40);
 
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
@@ -408,12 +408,9 @@ if(navigator.vibrate) navigator.vibrate(40);
 /* ✧ COMPLETE */
 function completeTask(){
   if(lastChoiceIndex!==null){
-
-    // ✧ ONLY remove if NOT saving
     if(!saveMode){
       tasks.splice(lastChoiceIndex,1);
     }
-
     lastChoiceIndex=null;
     render();
     save();
@@ -423,16 +420,8 @@ function completeTask(){
   localStorage.setItem("streak",streak);
   streakEl.textContent="🔥 Streak: "+streak;
 
-  // ✧ VARIABLE REWARD TEXT (dopamine spike)
-  const rewards = [
-    "✨ DONE ✨",
-    "🔥 NICE 🔥",
-    "⚡ LET’S GO ⚡",
-    "💥 YOU DID IT 💥",
-    "🌟 KEEP GOING 🌟"
-  ];
-
-  result.textContent = rewards[Math.floor(Math.random()*rewards.length)];
+  const rewards=["✨ DONE ✨","🔥 NICE 🔥","⚡ LET’S GO ⚡","💥 YOU DID IT 💥"];
+  result.textContent=rewards[Math.floor(Math.random()*rewards.length)];
 
   ball.classList.add("donePulse");
   confetti();
@@ -470,6 +459,19 @@ function closeDrawer(){
   overlay.classList.remove("active");
 }
 
+/* ✧ DOPAMINE HINTS */
+const hints=[
+"Small wins rewire your brain.",
+"Action creates clarity.",
+"Done is better than perfect.",
+"Start tiny. Momentum builds.",
+"You don’t need motivation — just motion."
+];
+
+setInterval(()=>{
+  dopamineHint.textContent="✧ "+hints[Math.floor(Math.random()*hints.length)];
+},4000);
+
 /* ✧ INIT */
 const drawer=document.getElementById("drawer");
 const overlay=document.getElementById("overlay");
@@ -479,31 +481,16 @@ const result=document.getElementById("result");
 const ball=document.getElementById("ball");
 const streakEl=document.getElementById("streak");
 const switchEl=document.getElementById("switch");
+const dopamineHint=document.getElementById("dopamineHint");
 
 switchEl.classList.toggle("active",saveMode);
 render();
 streakEl.textContent="🔥 Streak: "+streak;
 
 /* ✧ PWA */
-if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator){
   navigator.serviceWorker.register("service-worker.js");
 }
-/* ✧ DOPAMINE ROTATING HINTS */
-const hints = [
-  "Small wins rewire your brain.",
-  "Action creates clarity.",
-  "Done is better than perfect.",
-  "Start tiny. Momentum builds.",
-  "Your brain rewards movement, not thinking.",
-  "You don’t need motivation — just motion.",
-  "One task changes your state.",
-  "This is how momentum starts."
-];
-
-setInterval(()=>{
-  const hint = hints[Math.floor(Math.random()*hints.length)];
-  document.getElementById("dopamineHint").textContent = "✧ " + hint;
-}, 4000);
 </script>
 
 </body>
