@@ -10,7 +10,42 @@ body {
   font-family:'Segoe UI';
   background: radial-gradient(circle at top,#140033,#000);
   color:#fff;
-  text-align:center;
+
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* ✧ APP LAYOUT */
+.app{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:100vh;
+  padding:10px 0;
+}
+
+/* ✧ TOP SECTION */
+.top{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* ✧ MIDDLE */
+.middle{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex:1;
+}
+
+/* ✧ BOTTOM */
+.bottom{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:10px;
 }
 
 /* HEADER */
@@ -19,7 +54,7 @@ body {
   justify-content:center;
   align-items:center;
   gap:14px;
-  margin-top:20px;
+  margin-top:10px;
 }
 
 .header-ball {
@@ -51,7 +86,7 @@ h1 {
   -webkit-text-fill-color:transparent;
 }
 
-/* ✧ INSTRUCTIONS (FIXED + CLEAN) */
+/* INSTRUCTIONS */
 .instructions{
   width:85%;max-width:400px;
   margin:12px auto;
@@ -93,7 +128,6 @@ button{
 /* BALL */
 .ball{
   width:230px;height:230px;
-  margin:25px auto;
   border-radius:50%;
   background:radial-gradient(circle,#0a0a0a,#000);
   display:flex;align-items:center;justify-content:center;
@@ -144,14 +178,13 @@ button{
   color:#34d399;
 }
 
-/* ✧ TASKS TRUE LEFT ALIGN */
+/* TASKS */
 li{
   margin:12px auto;
   background:#222;
   padding:16px;
   border-radius:16px;
   max-width:320px;
-
   display:flex;
   flex-direction:column;
   align-items:flex-start;
@@ -232,65 +265,59 @@ li{
   pointer-events:auto;
 }
 
-.streak{color:#ff9edb;margin-top:10px;}
+.streak{
+  color:#ff9edb;
+  margin-top:10px;
+  text-align:center;
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <div class="header-ball"><div class="header-core"></div></div>
-  <h1>Magic Dopamine Ball</h1>
-</div>
+<div class="app">
 
-<!-- ✧ INSTRUCTIONS (UPGRADED) -->
-<div class="instructions" onclick="this.classList.toggle('active')">
-<strong>ℹ️ How to use</strong>
-<p>
-<strong>Step 1:</strong> Add your options<br>
-Type anything you could do right now.<br><br>
+  <div class="top">
 
-<strong>Step 2:</strong> Assign energy<br>
-💤 Low = very easy<br>
-⚡ Medium = some effort<br>
-🔥 High = more demanding<br><br>
+    <div class="header">
+      <div class="header-ball"><div class="header-core"></div></div>
+      <h1>Magic Dopamine Ball</h1>
+    </div>
 
-<strong>Step 3:</strong> Set your current energy<br>
-Match the dropdown to how you feel.<br><br>
+    <div class="instructions" onclick="this.classList.toggle('active')">
+      <strong>ℹ️ How to use</strong>
+      <p>
+        Add tasks → assign energy → set your current energy → press decide → follow it → build streak.
+      </p>
+    </div>
 
-<strong>Step 4:</strong> Press Decide<br>
-The ball chooses what you can handle.<br><br>
+    <input id="taskInput" placeholder="Add task">
 
-<strong>Step 5:</strong> Follow it<br>
-No overthinking.<br><br>
+    <select id="energySelect">
+      <option value="low">💤 Low</option>
+      <option value="medium">⚡ Medium</option>
+      <option value="high">🔥 High</option>
+    </select>
 
-<strong>Step 6:</strong> Tap "I did it"<br>
-Build your streak 🔥<br><br>
+    <button onclick="addTask()">+ Add</button>
 
-<strong>Optional:</strong> Save mode keeps tasks after refresh.
-</p>
-</div>
-
-<input id="taskInput" placeholder="Add task">
-
-<select id="energySelect">
-<option value="low">💤 Low</option>
-<option value="medium">⚡ Medium</option>
-<option value="high">🔥 High</option>
-</select>
-
-<button onclick="addTask()">+ Add</button>
-
-<div class="ball" id="ball">
-  <div class="inner">
-    <div id="result">Ask me…</div>
   </div>
+
+  <div class="middle">
+    <div class="ball" id="ball">
+      <div class="inner">
+        <div id="result">Ask me…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button onclick="decide()">✨ Decide</button>
+    <button onclick="completeTask()">✅ I did it</button>
+    <div class="streak" id="streak">🔥 Streak: 0</div>
+  </div>
+
 </div>
-
-<button onclick="decide()">✨ Decide</button>
-<button onclick="completeTask()">✅ I did it</button>
-
-<div class="streak" id="streak">🔥 Streak: 0</div>
 
 <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 
