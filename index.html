@@ -13,40 +13,51 @@ body {
   text-align:center;
 }
 
-/* ✧ HEADER */
+/* ✧ HEADER UPGRADE */
 .header {
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:10px;
+  gap:14px;
   margin-top:20px;
 }
 
 .header-ball {
-  width:60px;height:60px;
+  width:70px;
+  height:70px;
   border-radius:50%;
-  background: radial-gradient(circle,#222,#000);
-  box-shadow:0 0 25px rgba(124,58,237,1);
-  display:flex;align-items:center;justify-content:center;
+  background: radial-gradient(circle,#1a1a1a,#000);
+  box-shadow:0 0 30px #7c3aed, 0 0 60px #ec4899;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:float 4s ease-in-out infinite;
 }
 
-.header-inner {
-  width:30px;height:30px;
-  background:linear-gradient(135deg,#6366f1,#c084fc);
-  transform:rotate(45deg);
-  border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
+@keyframes float {
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
 }
 
-.header-inner span {
-  transform:rotate(-45deg);
-  font-size:12px;
-  font-weight:bold;
+/* ✧ mystical core */
+.header-core {
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:radial-gradient(circle,#c084fc,#6366f1);
+  box-shadow:0 0 20px #c084fc;
 }
 
-h1 { font-size:1.8rem; }
+h1 {
+  font-size:1.9rem;
+  margin:0;
+  background:linear-gradient(90deg,#fff,#f472b6,#fff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  letter-spacing:0.5px;
+}
 
-/* ✧ INPUT */
+/* INPUT */
 input,select{
   width:85%;max-width:400px;
   padding:14px;margin:8px;
@@ -64,43 +75,32 @@ button{
   margin:6px;
 }
 
-/* ✧ INSTRUCTIONS */
-.instructions{
-  width:85%;max-width:400px;margin:10px auto;
-  padding:12px;border-radius:12px;
-  background:rgba(255,255,255,0.05);
-  cursor:pointer;
-}
-.instructions p{display:none;text-align:left;font-size:0.9rem;}
-.instructions.active p{display:block;}
-
-/* ✧ BALL */
+/* ✧ BALL UPGRADE */
 .ball{
-  width:220px;height:220px;
-  margin:20px auto;
+  width:230px;height:230px;
+  margin:25px auto;
   border-radius:50%;
-  background:radial-gradient(circle,#1a1a1a,#000);
+  background:radial-gradient(circle,#0a0a0a,#000);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 80px rgba(124,58,237,1);
-  transition:0.3s;
+  box-shadow:
+    0 0 60px rgba(124,58,237,1),
+    0 0 120px rgba(236,72,153,0.6);
+  animation:breath 4s ease-in-out infinite;
 }
 
-.ball.deciding{
-  animation:spinGlow 1s linear infinite;
-}
-
-@keyframes spinGlow{
-  0%{transform:rotate(0deg);box-shadow:0 0 60px #7c3aed;}
-  50%{box-shadow:0 0 120px #ec4899;}
-  100%{transform:rotate(360deg);box-shadow:0 0 60px #7c3aed;}
+@keyframes breath{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.03);}
 }
 
 .inner{
-  width:110px;height:110px;
+  width:120px;height:120px;
   background:linear-gradient(135deg,#6366f1,#c084fc);
   transform:rotate(45deg);
-  border-radius:20px;
-  display:flex;align-items:center;justify-content:center;
+  border-radius:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 #result{
@@ -108,22 +108,45 @@ button{
   font-weight:bold;
 }
 
-/* ✧ CONFETTI */
-.confetti{
-  position:fixed;
-  width:8px;height:8px;
-  background:red;
-  animation:explode 1s forwards;
+/* DONE */
+.done {
+  font-size:20px;
+  color:#34d399;
+  animation:pop 0.4s ease;
+}
+@keyframes pop {
+  0% { transform: scale(0.6) rotate(-45deg); opacity: 0; }
+  100% { transform: scale(1) rotate(-45deg); opacity: 1; }
 }
 
-@keyframes explode{
-  to{
-    transform:translate(var(--x), var(--y)) rotate(720deg);
-    opacity:0;
-  }
+/* ✧ TASKS PERFECTLY CENTRED */
+li{
+  margin:12px auto;
+  background:#222;
+  padding:16px;
+  border-radius:16px;
+  max-width:320px;
+
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:center;
 }
 
-/* ✧ DRAWER */
+/* true visual centre */
+.task-text{
+  text-align:center;
+}
+
+/* delete sits separately */
+.delete-btn{
+  background:linear-gradient(135deg,#7c3aed,#ec4899);
+  border:none;
+  border-radius:12px;
+  padding:6px 10px;
+  color:white;
+}
+
+/* DRAWER */
 .drawer{
   position:fixed;
   bottom:0;
@@ -134,7 +157,6 @@ button{
   transform:translateY(calc(100% - 80px));
   transition:0.3s;
 }
-
 .drawer.open{ transform:translateY(0); }
 
 .handle{
@@ -144,34 +166,7 @@ button{
   border-radius:10px;
 }
 
-li{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
-  margin:10px auto;
-  background:#222;
-  padding:14px;
-  border-radius:14px;
-  max-width:350px;
-}
-
-.task-text{
-  width:100%;
-  text-align:center;
-}
-
-.delete-btn{
-  position:absolute;
-  right:10px;
-  background:linear-gradient(135deg,#7c3aed,#ec4899);
-  border:none;
-  border-radius:10px;
-  padding:6px 10px;
-  color:white;
-}
-
-/* ✧ OVERLAY */
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
@@ -194,29 +189,9 @@ li{
 
 <div class="header">
   <div class="header-ball">
-    <div class="header-inner"><span>8</span></div>
+    <div class="header-core"></div>
   </div>
   <h1>Magic Dopamine Ball</h1>
-</div>
-
-<!-- ✧ FULL INSTRUCTIONS -->
-<div class="instructions" onclick="this.classList.toggle('active')">
-ℹ️ How to use
-<p>
-Add tasks and assign energy:<br><br>
-
-💤 Low → very easy (minimal effort)<br>
-⚡ Medium → some effort<br>
-🔥 High → more demanding<br><br>
-
-Before pressing decide, set the dropdown to your <strong>current energy</strong>.<br><br>
-
-The ball will choose something you can actually handle right now.<br><br>
-
-Tap "I did it" when complete → build your streak.<br><br>
-
-Swipe up to manage tasks.
-</p>
 </div>
 
 <input id="taskInput" placeholder="Add task">
@@ -252,7 +227,6 @@ let tasks=[];
 let lastChoiceIndex=null;
 let streak=0;
 
-/* TASKS */
 function addTask(){
   const text=taskInput.value;
   if(text.trim()){
@@ -279,22 +253,16 @@ function deleteTask(i){
   render();
 }
 
-/* DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
-
-  ball.classList.add("deciding");
 
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
     lastChoiceIndex=index;
-
     result.textContent="👉 "+tasks[index].text;
-    ball.classList.remove("deciding");
-  },1000);
+  },500);
 }
 
-/* COMPLETE */
 function completeTask(){
   if(lastChoiceIndex!==null){
     tasks.splice(lastChoiceIndex,1);
@@ -305,32 +273,14 @@ function completeTask(){
   streakEl.textContent="🔥 Streak: "+streak;
 
   result.textContent="✨ DONE ✨";
+  result.classList.add("done");
 
-  confettiBurst();
+  setTimeout(()=>{
+    result.classList.remove("done");
+    result.textContent="Ask me…";
+  },1000);
 }
 
-/* ✧ CONFETTI */
-function confettiBurst(){
-  for(let i=0;i<40;i++){
-    const c=document.createElement("div");
-    c.className="confetti";
-
-    const x=(Math.random()-0.5)*400+"px";
-    const y=(Math.random()-0.5)*400+"px";
-
-    c.style.setProperty('--x',x);
-    c.style.setProperty('--y',y);
-    c.style.left=window.innerWidth/2+"px";
-    c.style.top="60%";
-
-    c.style.background=["#f472b6","#34d399","#facc15","#a78bfa"][Math.floor(Math.random()*4)];
-
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),1000);
-  }
-}
-
-/* DRAWER */
 function openDrawer(){
   drawer.classList.add("open");
   overlay.classList.add("active");
@@ -345,7 +295,6 @@ const overlay=document.getElementById("overlay");
 const taskList=document.getElementById("taskList");
 const taskInput=document.getElementById("taskInput");
 const result=document.getElementById("result");
-const ball=document.getElementById("ball");
 const streakEl=document.getElementById("streak");
 
 render();
