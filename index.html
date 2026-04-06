@@ -1,172 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Magic Dopamine Ball ✨</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI';
-      background: radial-gradient(circle at top, #140033, #000);
-      color: #fff;
-      text-align: center;
-    }
+<style>
+body {
+  margin:0;
+  font-family:'Segoe UI';
+  background: radial-gradient(circle at top,#140033,#000);
+  color:#fff;
+  text-align:center;
+  overflow:hidden;
+}
 
-    /* ✧ animated header */
-    h1 {
-      font-size: 2.4rem;
-      margin-top: 30px;
-      font-weight: 700;
-      background: linear-gradient(90deg, #fff, #f472b6, #fff);
-      background-size: 200%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 4s infinite linear;
-    }
+/* ✧ animated title */
+h1{
+  margin-top:30px;
+  font-size:2.4rem;
+  background:linear-gradient(90deg,#fff,#f472b6,#fff);
+  background-size:200%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation: shimmer 4s linear infinite;
+}
+@keyframes shimmer {
+  0%{background-position:0%}
+  100%{background-position:200%}
+}
 
-    @keyframes shimmer {
-      0% { background-position: 0% }
-      100% { background-position: 200% }
-    }
+.container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
 
-    .container {
-      padding: 10px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+input,select{
+  width:85%;
+  max-width:400px;
+  padding:14px;
+  margin:8px;
+  border-radius:14px;
+  border:none;
+  background:rgba(255,255,255,0.1);
+  color:#fff;
+}
 
-    input, select {
-      width: 85%;
-      max-width: 400px;
-      padding: 14px;
-      margin: 8px;
-      border-radius: 14px;
-      border: none;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-    }
+button{
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#7c3aed,#ec4899);
+  color:#fff;
+  margin:6px;
+}
 
-    button {
-      padding: 14px 20px;
-      border-radius: 14px;
-      border: none;
-      background: linear-gradient(135deg, #7c3aed, #ec4899);
-      color: white;
-      margin: 6px;
-      font-weight: 600;
-      box-shadow: 0 0 20px rgba(124,58,237,0.6);
-    }
+/* ✧ ball */
+.ball{
+  width:260px;
+  height:260px;
+  margin:20px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#1a1a1a,#000);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-shadow:0 0 100px rgba(124,58,237,0.9);
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
 
-    /* ✧ floating ball */
-    .ball {
-      width: 260px;
-      height: 260px;
-      margin: 25px 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #1a1a1a, #000);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 100px rgba(124,58,237,0.9);
-      animation: float 3s ease-in-out infinite;
-    }
+.inner{
+  width:140px;
+  height:140px;
+  background:linear-gradient(135deg,#6366f1,#c084fc);
+  transform:rotate(45deg);
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    @keyframes float {
-      0%,100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
+#result{
+  transform:rotate(-45deg);
+  font-weight:bold;
+}
 
-    .ball.active {
-      transform: scale(1.05);
-      box-shadow: 0 0 140px rgba(236,72,153,1);
-    }
+/* ✧ drawer */
+.drawer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#111;
+  border-radius:20px 20px 0 0;
+  padding:15px;
+  transform:translateY(75%);
+  transition:0.3s;
+}
+.drawer.open{
+  transform:translateY(0);
+}
 
-    .inner {
-      width: 140px;
-      height: 140px;
-      background: linear-gradient(135deg, #6366f1, #c084fc);
-      transform: rotate(45deg);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.handle{
+  width:50px;
+  height:5px;
+  background:#555;
+  border-radius:10px;
+  margin:0 auto 10px;
+}
 
-    /* ✧ result animation */
-    #result {
-      transform: rotate(-45deg);
-      font-weight: bold;
-      opacity: 0;
-      transition: 0.3s;
-    }
+/* ✧ particles */
+.particle{
+  position:fixed;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  animation:floatUp 1s linear forwards;
+}
+@keyframes floatUp{
+  from{opacity:1}
+  to{transform:translateY(-100px);opacity:0}
+}
 
-    #result.show {
-      opacity: 1;
-      transform: rotate(-45deg) scale(1.05);
-    }
-
-    /* ✧ bottom panel */
-    .panel {
-      width: 100%;
-      max-width: 500px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 16px 16px 0 0;
-      margin-top: 20px;
-      padding: 12px;
-      cursor: pointer;
-    }
-
-    .panel-content {
-      display: none;
-      margin-top: 10px;
-    }
-
-    .panel.active .panel-content {
-      display: block;
-    }
-
-    li {
-      display: flex;
-      justify-content: space-between;
-      margin: 6px 0;
-      background: rgba(255,255,255,0.08);
-      padding: 10px;
-      border-radius: 10px;
-    }
-
-    .switch {
-      width: 40px;
-      height: 20px;
-      background: #555;
-      border-radius: 20px;
-      position: relative;
-      cursor: pointer;
-      margin: 10px auto;
-    }
-
-    .switch::after {
-      content: "";
-      width: 16px;
-      height: 16px;
-      background: white;
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      border-radius: 50%;
-      transition: 0.2s;
-    }
-
-    .switch.active {
-      background: #7c3aed;
-    }
-
-    .switch.active::after {
-      left: 22px;
-    }
-
-  </style>
+</style>
 </head>
 
 <body>
@@ -175,109 +133,102 @@
 
 <div class="container">
 
-  <input id="taskInput" placeholder="What are your options?">
+<input id="taskInput" placeholder="Add task">
 
-  <select id="energy">
-    <option value="low">💤 Low</option>
-    <option value="medium">⚡ Medium</option>
-    <option value="high">🔥 High</option>
-  </select>
+<select id="energy">
+<option value="low">💤 Low</option>
+<option value="medium">⚡ Medium</option>
+<option value="high">🔥 High</option>
+</select>
 
-  <button onclick="addTask()">+ Add</button>
+<select id="mode">
+<option value="soft">💗 Soft</option>
+<option value="strict">⚔️ Strict</option>
+<option value="chaotic">🌀 Chaotic</option>
+</select>
 
-  <!-- ✧ BALL -->
-  <div class="ball" id="ball">
-    <div class="inner">
-      <div id="result">Ask me…</div>
-    </div>
+<button onclick="addTask()">+ Add</button>
+
+<div class="ball">
+  <div class="inner">
+    <div id="result">Ask me…</div>
   </div>
+</div>
 
-  <button onclick="decide()">✨ Decide</button>
+<button onclick="decide()">✨ Decide</button>
 
-  <!-- ✧ TASK PANEL (BOTTOM) -->
-  <div class="panel" onclick="togglePanel(this)">
-    📋 Tasks
+</div>
 
-    <div class="panel-content" onclick="event.stopPropagation()">
+<!-- ✧ drawer -->
+<div class="drawer" id="drawer" onclick="toggleDrawer()">
+<div class="handle"></div>
 
-      💾 Save tasks
-      <div id="switch" class="switch" onclick="toggleSave()"></div>
-
-      <ul id="taskList"></ul>
-
-    </div>
-  </div>
+<ul id="taskList"></ul>
 
 </div>
 
 <script>
-let saveMode = localStorage.getItem("saveMode") === "true";
-let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
+let tasks=[];
 
-function togglePanel(el){
-  el.classList.toggle("active");
-}
-
-function toggleSave(){
-  saveMode = !saveMode;
-  document.getElementById("switch").classList.toggle("active", saveMode);
-  localStorage.setItem("saveMode", saveMode);
+function toggleDrawer(){
+  drawer.classList.toggle("open");
 }
 
 function addTask(){
-  const text = taskInput.value;
-  const energy = energy.value;
-
-  if(text.trim()){
-    tasks.push({text, energy});
+  const text=taskInput.value;
+  const energy=energy.value;
+  if(text){
+    tasks.push({text,energy});
     taskInput.value="";
     render();
-    save();
-  }
-}
-
-function deleteTask(i){
-  tasks.splice(i,1);
-  render();
-  save();
-}
-
-function save(){
-  if(saveMode){
-    localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 }
 
 function render(){
-  const list = document.getElementById("taskList");
-  list.innerHTML="";
-
+  taskList.innerHTML="";
   tasks.forEach((t,i)=>{
     const li=document.createElement("li");
-    li.innerHTML=`${t.text} <button onclick="deleteTask(${i})">✕</button>`;
-    list.appendChild(li);
+    li.innerHTML=`${t.text} <button onclick="tasks.splice(${i},1);render()">✕</button>`;
+    taskList.appendChild(li);
   });
 }
 
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
-  const ball=document.getElementById("ball");
-  const result=document.getElementById("result");
+  const mode=mode.value;
 
-  ball.classList.add("active");
-  result.classList.remove("show");
+  let choice=tasks[Math.floor(Math.random()*tasks.length)].text;
 
-  setTimeout(()=>{
-    const choice=tasks[Math.floor(Math.random()*tasks.length)];
-    result.textContent="👉 "+choice.text;
-    result.classList.add("show");
-    ball.classList.remove("active");
-  },400);
+  if(mode==="strict"){
+    choice="Do this now: "+choice;
+  }
+  if(mode==="chaotic"){
+    const extras=["NOW ⚡","no excuses","go go go","you know you should"];
+    choice=choice+" "+extras[Math.floor(Math.random()*extras.length)];
+  }
+
+  result.textContent=choice;
+
+  vibrate();
+  particles();
 }
 
-render();
-document.getElementById("switch").classList.toggle("active", saveMode);
+function vibrate(){
+  if(navigator.vibrate) navigator.vibrate([50,30,50]);
+}
+
+function particles(){
+  for(let i=0;i<20;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+    p.style.left=Math.random()*window.innerWidth+"px";
+    p.style.top="60%";
+    p.style.background=["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1000);
+  }
+}
 </script>
 
 </body>
