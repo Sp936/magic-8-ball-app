@@ -16,7 +16,7 @@ body {
   text-align:center;
 }
 
-/* ✧ HEADER */
+/* HEADER */
 .header-ball {
   width:100px;height:100px;margin:20px auto;
   border-radius:50%;
@@ -45,7 +45,7 @@ button{
   color:#fff;margin:6px;
 }
 
-/* ✧ BALL */
+/* BALL */
 .ball{
   width:220px;height:220px;margin:20px auto;
   border-radius:50%;
@@ -64,7 +64,17 @@ button{
 }
 #result{transform:rotate(-45deg);font-weight:bold;}
 
-/* ✧ DRAWER */
+/* INSTRUCTIONS */
+.instructions{
+  width:85%;max-width:400px;margin:10px auto;
+  padding:12px;border-radius:12px;
+  background:rgba(255,255,255,0.05);
+  cursor:pointer;
+}
+.instructions p{display:none;text-align:left;font-size:0.9rem;}
+.instructions.active p{display:block;}
+
+/* DRAWER */
 .drawer{
   position:fixed;bottom:0;width:100%;
   background:#111;border-radius:20px 20px 0 0;
@@ -119,53 +129,22 @@ li{
 
 <h1>Magic Dopamine Ball</h1>
 
-< instructions -->
-
-<div class="instructions" onclick=" toggle Instructions(this)>
-
-How to use this properly
-
+<!-- ✧ CLEAN INSTRUCTIONS -->
+<div class="instructions" onclick="this.classList.toggle('active')">
+ℹ️ How to use
 <p>
+Add tasks and assign an energy level.<br><br>
+💤 Low = minimal effort<br>
+⚡ Medium = some effort<br>
+🔥 High = more demanding<br><br>
 
-Add each task along with the <strong> energy level it requires</strong>.<br><br>
+Before pressing decide, set the dropdown to your <strong>current energy</strong>.<br><br>
 
- + <input id="taskInput" placeholder=" What are your options?">
+The ball will choose something you can actually handle.<br><br>
 
-Low very easy (minimal effort)<br>
-
-Medium some effort<br>
-
-High more demanding<br><br>
-
-+ <select id="energy">
-
- +
-
-<option value="low"> Low</option>
-
- + <option value="medium"> Medium</option>
-
-+ <option value="high"> High</option>
-
- + </select>
-
-Before pressing decide, set the dropdown t o your <strong>current energy level</strong>.<br ><br>
-
- + <button onclick="addTask()">+ Add</button>
-
-The ball will choose something that matches what you can handle right now.<br><br <
-
-+ TASK PANEL -->
-
- + <div class="panel" onclick="togglePanel(this)
-
- + View Tasks
-
-Then follow it. No overthinking.
-
-Swipe up on the tab at the bottom of the page to view, save and remove tasks. 
-
- </p>
+Swipe up the bottom tab to view, save, or delete tasks.
+</p>
+</div>
 
 <input id="taskInput" placeholder="Add task">
 
@@ -188,7 +167,7 @@ Swipe up on the tab at the bottom of the page to view, save and remove tasks.
 
 <div class="streak" id="streak">🔥 Streak: 0</div>
 
-<!-- ✧ DRAWER -->
+<!-- DRAWER -->
 <div class="drawer" id="drawer">
   <div class="handle"></div>
 
@@ -206,24 +185,22 @@ let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
 let lastChoiceIndex = null;
 let streak = parseInt(localStorage.getItem("streak")) || 0;
 
-/* ✧ SAVE */
 function toggleSave(){
-  saveMode = !saveMode;
-  switchEl.classList.toggle("active", saveMode);
-  localStorage.setItem("saveMode", saveMode);
+  saveMode=!saveMode;
+  switchEl.classList.toggle("active",saveMode);
+  localStorage.setItem("saveMode",saveMode);
   save();
 }
 
 function save(){
   if(saveMode){
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem("tasks",JSON.stringify(tasks));
   }
 }
 
-/* ✧ TASKS */
 function addTask(){
-  const text = taskInput.value;
-  const energy = energy.value;
+  const text=taskInput.value;
+  const energy=energy.value;
   if(text.trim()){
     tasks.push({text,energy});
     taskInput.value="";
@@ -247,28 +224,24 @@ function render(){
   });
 }
 
-/* ✧ DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
   ball.classList.add("pulse");
-
   popSound.play();
   if(navigator.vibrate) navigator.vibrate(40);
 
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
     const choice=tasks[index];
-
     lastChoiceIndex=index;
-    result.textContent="👉 "+choice.text;
 
+    result.textContent="👉 "+choice.text;
     ball.classList.remove("pulse");
     particles();
   },400);
 }
 
-/* ✧ COMPLETE */
 function completeTask(){
   if(lastChoiceIndex!==null){
     tasks.splice(lastChoiceIndex,1);
@@ -289,7 +262,6 @@ function updateStreak(){
   streakEl.textContent="🔥 Streak: "+streak;
 }
 
-/* ✧ PARTICLES */
 function particles(){
   for(let i=0;i<20;i++){
     const p=document.createElement("div");
@@ -302,16 +274,28 @@ function particles(){
   }
 }
 
-/* ✧ SWIPE */
+/* ✧ SWIPE BOTH DIRECTIONS */
 let startY=0;
-drawer.addEventListener("touchstart",e=>startY=e.touches[0].clientY);
-drawer.addEventListener("touchmove",e=>{
-  let diff=e.touches[0].clientY-startY;
-  if(diff<-50) drawer.classList.add("open");
-  if(diff>50) drawer.classList.remove("open");
+let currentY=0;
+
+drawer.addEventListener("touchstart",e=>{
+  startY=e.touches[0].clientY;
 });
 
-/* ✧ INIT */
+drawer.addEventListener("touchmove",e=>{
+  currentY=e.touches[0].clientY;
+});
+
+drawer.addEventListener("touchend",()=>{
+  let diff=currentY-startY;
+
+  if(diff < -50){
+    drawer.classList.add("open");
+  } else if(diff > 50){
+    drawer.classList.remove("open");
+  }
+});
+
 const switchEl=document.getElementById("switch");
 const taskList=document.getElementById("taskList");
 const taskInput=document.getElementById("taskInput");
