@@ -74,20 +74,28 @@ button{
 .instructions p{display:none;text-align:left;font-size:0.9rem;}
 .instructions.active p{display:block;}
 
-/* DRAWER */
+/* ✧ DRAWER FIXED */
 .drawer{
-  position:fixed;bottom:0;width:100%;
-  background:#111;border-radius:20px 20px 0 0;
-  padding:15px;transform:translateY(75%);
+  position:fixed;
+  bottom:60px; /* ✧ raised above gesture area */
+  width:100%;
+  background:#111;
+  border-radius:20px 20px 0 0;
+  padding:15px;
+  transform:translateY(70%);
   transition:0.3s;
   box-shadow:0 -5px 40px rgba(236,72,153,0.7);
 }
 .drawer.open{transform:translateY(0);}
 
+/* ✧ bigger grab zone */
 .handle{
-  width:60px;height:6px;
+  width:80px;
+  height:10px;
   background:linear-gradient(90deg,#7c3aed,#ec4899);
-  margin:0 auto 10px;border-radius:10px;
+  margin:0 auto 12px;
+  border-radius:10px;
+  box-shadow:0 0 12px rgba(236,72,153,1);
 }
 
 li{
@@ -129,26 +137,17 @@ li{
 
 <h1>Magic Dopamine Ball</h1>
 
-<!-- ✧ CLEAN INSTRUCTIONS -->
 <div class="instructions" onclick="this.classList.toggle('active')">
 ℹ️ How to use
 <p>
-Add tasks and assign an energy level.<br><br>
-💤 Low = minimal effort<br>
-⚡ Medium = some effort<br>
-🔥 High = more demanding<br><br>
-
-Before pressing decide, set the dropdown to your <strong>current energy</strong>.<br><br>
-
-The ball will choose something you can actually handle.<br><br>
-
-Swipe up the bottom tab to view, save, or delete tasks.
+Add tasks → choose energy → press decide.<br><br>
+Swipe up the tab to manage tasks.
 </p>
 </div>
 
 <input id="taskInput" placeholder="Add task">
 
-<select id="energy">
+<select id="energySelect">
 <option value="low">💤 Low</option>
 <option value="medium">⚡ Medium</option>
 <option value="high">🔥 High</option>
@@ -167,7 +166,6 @@ Swipe up the bottom tab to view, save, or delete tasks.
 
 <div class="streak" id="streak">🔥 Streak: 0</div>
 
-<!-- DRAWER -->
 <div class="drawer" id="drawer">
   <div class="handle"></div>
 
@@ -185,36 +183,33 @@ let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
 let lastChoiceIndex = null;
 let streak = parseInt(localStorage.getItem("streak")) || 0;
 
+/* ADD TASK */
+function addTask(){
+  const text = document.getElementById("taskInput").value;
+  const energy = document.getElementById("energySelect").value;
+
+  if(text.trim()){
+    tasks.push({text,energy});
+    document.getElementById("taskInput").value="";
+    render();
+    save();
+  }
+}
+
+/* SAVE */
 function toggleSave(){
   saveMode=!saveMode;
   switchEl.classList.toggle("active",saveMode);
   localStorage.setItem("saveMode",saveMode);
   save();
 }
-
 function save(){
   if(saveMode){
     localStorage.setItem("tasks",JSON.stringify(tasks));
   }
 }
 
-function addTask(){
-  const text=taskInput.value;
-  const energy=energy.value;
-  if(text.trim()){
-    tasks.push({text,energy});
-    taskInput.value="";
-    render();
-    save();
-  }
-}
-
-function deleteTask(i){
-  tasks.splice(i,1);
-  render();
-  save();
-}
-
+/* TASKS */
 function render(){
   taskList.innerHTML="";
   tasks.forEach((t,i)=>{
@@ -223,13 +218,18 @@ function render(){
     taskList.appendChild(li);
   });
 }
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
+  save();
+}
 
+/* DECIDE */
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
   ball.classList.add("pulse");
   popSound.play();
-  if(navigator.vibrate) navigator.vibrate(40);
 
   setTimeout(()=>{
     const index=Math.floor(Math.random()*tasks.length);
@@ -242,6 +242,7 @@ function decide(){
   },400);
 }
 
+/* COMPLETE */
 function completeTask(){
   if(lastChoiceIndex!==null){
     tasks.splice(lastChoiceIndex,1);
@@ -253,8 +254,6 @@ function completeTask(){
   streak++;
   localStorage.setItem("streak",streak);
   updateStreak();
-
-  if(navigator.vibrate) navigator.vibrate([100,50,150]);
   particles();
 }
 
@@ -262,6 +261,7 @@ function updateStreak(){
   streakEl.textContent="🔥 Streak: "+streak;
 }
 
+/* PARTICLES */
 function particles(){
   for(let i=0;i<20;i++){
     const p=document.createElement("div");
@@ -274,9 +274,8 @@ function particles(){
   }
 }
 
-/* ✧ SWIPE BOTH DIRECTIONS */
-let startY=0;
-let currentY=0;
+/* SWIPE FIXED */
+let startY=0,currentY=0;
 
 drawer.addEventListener("touchstart",e=>{
   startY=e.touches[0].clientY;
@@ -289,16 +288,16 @@ drawer.addEventListener("touchmove",e=>{
 drawer.addEventListener("touchend",()=>{
   let diff=currentY-startY;
 
-  if(diff < -50){
+  if(diff < -40){
     drawer.classList.add("open");
-  } else if(diff > 50){
+  } else if(diff > 40){
     drawer.classList.remove("open");
   }
 });
 
+/* INIT */
 const switchEl=document.getElementById("switch");
 const taskList=document.getElementById("taskList");
-const taskInput=document.getElementById("taskInput");
 const result=document.getElementById("result");
 const ball=document.getElementById("ball");
 const popSound=document.getElementById("popSound");
