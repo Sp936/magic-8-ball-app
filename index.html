@@ -4,16 +4,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+body{
   margin:0;
   font-family:'Segoe UI';
   background: radial-gradient(circle at top,#140033,#000);
   color:#fff;
   text-align:center;
-  overflow:hidden;
 }
 
-/* ✧ animated title */
+/* ✧ header animation */
 h1{
   margin-top:30px;
   font-size:2.4rem;
@@ -111,6 +110,15 @@ button{
   margin:0 auto 10px;
 }
 
+li{
+  display:flex;
+  justify-content:space-between;
+  margin:6px;
+  background:#222;
+  padding:10px;
+  border-radius:10px;
+}
+
 /* ✧ particles */
 .particle{
   position:fixed;
@@ -124,6 +132,10 @@ button{
   to{transform:translateY(-100px);opacity:0}
 }
 
+.streak{
+  margin-top:10px;
+  color:#ff9edb;
+}
 </style>
 </head>
 
@@ -157,18 +169,36 @@ button{
 
 <button onclick="decide()">✨ Decide</button>
 
+<div class="streak" id="streak">🔥 Streak: 0</div>
+
 </div>
 
 <!-- ✧ drawer -->
 <div class="drawer" id="drawer" onclick="toggleDrawer()">
 <div class="handle"></div>
-
 <ul id="taskList"></ul>
-
 </div>
 
 <script>
-let tasks=[];
+let tasks = [];
+
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+let lastUsed = localStorage.getItem("lastUsed");
+
+const today = new Date().toDateString();
+
+if(lastUsed !== today){
+  if(lastUsed){
+    const y = new Date();
+    y.setDate(y.getDate()-1);
+    if(lastUsed !== y.toDateString()) streak = 0;
+  }
+}
+
+function saveUsage(){
+  localStorage.setItem("lastUsed", today);
+  localStorage.setItem("streak", streak);
+}
 
 function toggleDrawer(){
   drawer.classList.toggle("open");
@@ -197,25 +227,31 @@ function decide(){
   if(!tasks.length) return alert("Add tasks");
 
   const mode=mode.value;
-
   let choice=tasks[Math.floor(Math.random()*tasks.length)].text;
 
-  if(mode==="strict"){
-    choice="Do this now: "+choice;
-  }
+  if(mode==="strict") choice="Do this now: "+choice;
   if(mode==="chaotic"){
-    const extras=["NOW ⚡","no excuses","go go go","you know you should"];
-    choice=choice+" "+extras[Math.floor(Math.random()*extras.length)];
+    const extras=["NOW ⚡","no excuses","go go go"];
+    choice+=" "+extras[Math.floor(Math.random()*extras.length)];
   }
 
   result.textContent=choice;
 
-  vibrate();
+  reward();
+}
+
+function reward(){
+  streak++;
+  saveUsage();
+  updateStreak();
+
+  if(navigator.vibrate) navigator.vibrate([50,30,50]);
+
   particles();
 }
 
-function vibrate(){
-  if(navigator.vibrate) navigator.vibrate([50,30,50]);
+function updateStreak(){
+  streakEl.textContent="🔥 Streak: "+streak;
 }
 
 function particles(){
@@ -229,6 +265,10 @@ function particles(){
     setTimeout(()=>p.remove(),1000);
   }
 }
+
+const streakEl=document.getElementById("streak");
+updateStreak();
+render();
 </script>
 
 </body>
