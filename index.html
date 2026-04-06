@@ -361,6 +361,18 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
 </script>
+function particles(){
+  for(let i=0;i<20;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+    p.style.left=Math.random()*window.innerWidth+"px";
+    p.style.top="60%";
+    p.style.background=["#f472b6","#a78bfa","#34d399","#facc15"][Math.floor(Math.random()*4)];
 
+    document.body.appendChild(p);
+
+    setTimeout(()=>p.remove(),800);
+  }
+}
 </body>
 </html>
