@@ -3,23 +3,23 @@
 <head>
   <title>Magic Dopamine Ball ✨</title>
 
-  <link rel="icon" href="file_00000000eb2c72469b0cd174bf8953a5.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI';
-      background: radial-gradient(circle at top, #12002a, #000);
-      color: #f5f5f5;
+      background: radial-gradient(circle at top, #140033, #000);
+      color: #fff;
       text-align: center;
+      overflow: hidden;
     }
 
     h1 {
       font-size: 2.4rem;
       margin-top: 30px;
       font-weight: 700;
-      background: linear-gradient(90deg, #ffffff, #f472b6);
+      background: linear-gradient(90deg, #fff, #f472b6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -52,23 +52,30 @@
       margin: 6px;
       font-size: 1rem;
       font-weight: 600;
+      box-shadow: 0 0 20px rgba(124,58,237,0.6);
     }
 
     .ball {
-      width: 240px;
-      height: 240px;
-      margin: 20px 0 10px;
+      width: 260px;
+      height: 260px;
+      margin: 25px 0;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #1a1a1a, #000);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 60px rgba(124,58,237,0.8);
+      box-shadow: 0 0 100px rgba(124,58,237,0.9);
+      transition: 0.3s;
+    }
+
+    .ball.active {
+      transform: scale(1.05);
+      box-shadow: 0 0 140px rgba(236,72,153,1);
     }
 
     .inner {
-      width: 130px;
-      height: 130px;
+      width: 140px;
+      height: 140px;
       background: linear-gradient(135deg, #6366f1, #c084fc);
       transform: rotate(45deg);
       border-radius: 20px;
@@ -79,8 +86,31 @@
 
     #result {
       transform: rotate(-45deg);
-      font-weight: 700;
-      color: #fff;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .instructions {
+      width: 85%;
+      max-width: 400px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .instructions p {
+      display: none;
+      font-size: 0.9rem;
+      color: #ddd;
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    .instructions.active p {
+      display: block;
     }
 
     .streak {
@@ -89,65 +119,17 @@
       font-weight: 600;
     }
 
-    /* ✧ toggle switch */
-    .toggle {
-      margin: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9rem;
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      animation: fall 1s linear forwards;
     }
 
-    .switch {
-      position: relative;
-      width: 40px;
-      height: 20px;
-      background: #555;
-      border-radius: 20px;
-      cursor: pointer;
+    @keyframes fall {
+      from { transform: translateY(-50px); opacity: 1; }
+      to { transform: translateY(600px); opacity: 0; }
     }
-
-    .switch::after {
-      content: "";
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      background: white;
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: 0.2s;
-    }
-
-    .switch.active {
-      background: #7c3aed;
-    }
-
-    .switch.active::after {
-      left: 22px;
-    }
-
-    /* ✧ instructions */
-    .instructions {
-      width: 85%;
-      max-width: 400px;
-      margin: 10px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    .instructions p {
-      display: none;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-
-    .instructions.active p {
-      display: block;
-    }
-
   </style>
 </head>
 
@@ -159,8 +141,20 @@
 
   <!-- ✧ instructions -->
   <div class="instructions" onclick="toggleInstructions(this)">
-    ℹ️ How to use
-    <p>Add your options, hit decide, and follow what it says. No overthinking.</p>
+    ℹ️ How to use this properly
+    <p>
+    Add each task along with the <strong>energy level it requires</strong>.<br><br>
+
+    💤 Low = very easy (minimal effort)<br>
+    ⚡ Medium = some effort<br>
+    🔥 High = more demanding<br><br>
+
+    Before pressing decide, set the dropdown to your <strong>current energy level</strong>.<br><br>
+
+    The ball will choose something that matches what you can handle right now.<br><br>
+
+    👉 Then follow it. No overthinking.
+    </p>
   </div>
 
   <input id="taskInput" placeholder="What are your options?">
@@ -173,75 +167,95 @@
 
   <button onclick="addTask()">+ Add</button>
 
-  <!-- ✧ toggle -->
-  <div class="toggle">
-    <div id="switch" class="switch" onclick="toggleSave()"></div>
-    <span>Save tasks</span>
-  </div>
-
-  <div class="ball">
+  <!-- ✧ ball -->
+  <div class="ball" id="ball">
     <div class="inner">
       <div id="result">Ask me…</div>
     </div>
   </div>
 
   <button onclick="decide()">✨ Decide</button>
+  <button onclick="completeTask()">✅ I did it</button>
 
   <div class="streak" id="streak">🔥 Streak: 0</div>
 
-  <button onclick="clearStreak()">Reset Streak</button>
-
 </div>
 
+<!-- ✧ sounds -->
+<audio id="pop" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+<audio id="win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+
 <script>
-let saveMode = localStorage.getItem("saveMode") === "true";
-let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks")) || [] : [];
-let streak = parseInt(localStorage.getItem("streak")) || 0;
+let tasks = [];
+let streak = 0;
 
-function save() {
-  if (saveMode) localStorage.setItem("tasks", JSON.stringify(tasks));
-  localStorage.setItem("streak", streak);
-  localStorage.setItem("saveMode", saveMode);
-}
-
-function toggleSave() {
-  saveMode = !saveMode;
-  document.getElementById("switch").classList.toggle("active", saveMode);
-  save();
-}
-
-function toggleInstructions(el) {
+function toggleInstructions(el){
   el.classList.toggle("active");
 }
 
-function addTask() {
+function addTask(){
   const text = document.getElementById("taskInput").value;
   const energy = document.getElementById("energy").value;
-  if (text.trim()) {
-    tasks.push({ text, energy });
-    save();
+  if(text.trim()){
+    tasks.push({text, energy});
     document.getElementById("taskInput").value = "";
   }
 }
 
-function decide() {
-  if (!tasks.length) return alert("Add tasks first");
-  const choice = tasks[Math.floor(Math.random() * tasks.length)];
-  document.getElementById("result").textContent = "👉 " + choice.text;
+function decide(){
+  if(!tasks.length) return alert("Add tasks");
+
+  const selectedEnergy = document.getElementById("energy").value;
+
+  let pool = [];
+
+  if(selectedEnergy === "low"){
+    pool = tasks.filter(t => t.energy === "low");
+  }
+
+  if(selectedEnergy === "medium"){
+    pool = tasks.filter(t => t.energy !== "high");
+  }
+
+  if(selectedEnergy === "high"){
+    pool = tasks;
+  }
+
+  if(pool.length === 0) pool = tasks;
+
+  const ball = document.getElementById("ball");
+  ball.classList.add("active");
+
+  document.getElementById("pop").play();
+  if(navigator.vibrate) navigator.vibrate(50);
+
+  setTimeout(()=>{
+    const choice = pool[Math.floor(Math.random()*pool.length)];
+    document.getElementById("result").textContent = "👉 " + choice.text;
+    ball.classList.remove("active");
+  }, 500);
 }
 
-function clearStreak() {
-  streak = 0;
-  save();
-  update();
-}
-
-function update() {
+function completeTask(){
+  streak++;
   document.getElementById("streak").textContent = `🔥 Streak: ${streak}`;
-  document.getElementById("switch").classList.toggle("active", saveMode);
+
+  document.getElementById("win").play();
+  if(navigator.vibrate) navigator.vibrate([100,50,100]);
+
+  confetti();
 }
 
-update();
+function confetti(){
+  for(let i=0;i<25;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*window.innerWidth+"px";
+    c.style.background=["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1000);
+  }
+}
 </script>
 
 </body>
