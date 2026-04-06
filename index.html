@@ -1,149 +1,185 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magic Dopamine Ball ✨</title>
 
-<style>
-body{
-  margin:0;
-  font-family:'Segoe UI';
-  background: radial-gradient(circle at top,#140033,#000);
-  color:#fff;
-  text-align:center;
-}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* ✧ header animation */
-h1{
-  margin-top:30px;
-  font-size:2.4rem;
-  background:linear-gradient(90deg,#fff,#f472b6,#fff);
-  background-size:200%;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation: shimmer 4s linear infinite;
-}
-@keyframes shimmer {
-  0%{background-position:0%}
-  100%{background-position:200%}
-}
+  <!-- ✧ PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="mobile-web-app-capable" content="yes">
 
-.container{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI';
+      background: radial-gradient(circle at top,#140033,#000);
+      color: #fff;
+      text-align: center;
+    }
 
-input,select{
-  width:85%;
-  max-width:400px;
-  padding:14px;
-  margin:8px;
-  border-radius:14px;
-  border:none;
-  background:rgba(255,255,255,0.1);
-  color:#fff;
-}
+    /* ✧ HEADER BALL */
+    .header-ball {
+      width: 120px;
+      height: 120px;
+      margin: 20px auto 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #222, #000);
+      box-shadow:
+        inset -10px -10px 20px rgba(0,0,0,0.9),
+        inset 5px 5px 10px rgba(255,255,255,0.1),
+        0 0 40px rgba(124,58,237,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-button{
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,#7c3aed,#ec4899);
-  color:#fff;
-  margin:6px;
-}
+    .header-inner {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg,#6366f1,#c084fc);
+      transform: rotate(45deg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-/* ✧ ball */
-.ball{
-  width:260px;
-  height:260px;
-  margin:20px;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,#1a1a1a,#000);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  box-shadow:0 0 100px rgba(124,58,237,0.9);
-  animation:float 3s ease-in-out infinite;
-}
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
-}
+    .header-inner span {
+      transform: rotate(-45deg);
+      font-weight: bold;
+    }
 
-.inner{
-  width:140px;
-  height:140px;
-  background:linear-gradient(135deg,#6366f1,#c084fc);
-  transform:rotate(45deg);
-  border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
 
-#result{
-  transform:rotate(-45deg);
-  font-weight:bold;
-}
+    input, select {
+      width: 85%;
+      max-width: 400px;
+      padding: 14px;
+      margin: 8px;
+      border-radius: 14px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
 
-/* ✧ drawer */
-.drawer{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:#111;
-  border-radius:20px 20px 0 0;
-  padding:15px;
-  transform:translateY(75%);
-  transition:0.3s;
-}
-.drawer.open{
-  transform:translateY(0);
-}
+    button {
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg,#7c3aed,#ec4899);
+      color: white;
+      margin: 6px;
+    }
 
-.handle{
-  width:50px;
-  height:5px;
-  background:#555;
-  border-radius:10px;
-  margin:0 auto 10px;
-}
+    /* ✧ MAIN BALL */
+    .ball {
+      width: 240px;
+      height: 240px;
+      margin: 20px auto;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%,#1a1a1a,#000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 80px rgba(124,58,237,0.9);
+    }
 
-li{
-  display:flex;
-  justify-content:space-between;
-  margin:6px;
-  background:#222;
-  padding:10px;
-  border-radius:10px;
-}
+    .inner {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg,#6366f1,#c084fc);
+      transform: rotate(45deg);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-/* ✧ particles */
-.particle{
-  position:fixed;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  animation:floatUp 1s linear forwards;
-}
-@keyframes floatUp{
-  from{opacity:1}
-  to{transform:translateY(-100px);opacity:0}
-}
+    #result {
+      transform: rotate(-45deg);
+      font-weight: bold;
+    }
 
-.streak{
-  margin-top:10px;
-  color:#ff9edb;
-}
-</style>
+    /* ✧ INSTRUCTIONS */
+    .instructions {
+      width: 85%;
+      max-width: 400px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px auto;
+      cursor: pointer;
+    }
+
+    .instructions p {
+      display: none;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .instructions.active p {
+      display: block;
+    }
+
+    /* ✧ DRAWER */
+    .drawer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #111;
+      border-radius: 20px 20px 0 0;
+      padding: 15px;
+      transform: translateY(75%);
+      transition: 0.3s;
+    }
+
+    .drawer.open {
+      transform: translateY(0);
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px;
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+  </style>
 </head>
 
 <body>
 
-<h1>🔮 Magic Dopamine Ball</h1>
+<!-- ✧ HEADER -->
+<div class="header-ball">
+  <div class="header-inner">
+    <span>8</span>
+  </div>
+</div>
 
-<div class="container">
+<h1>Magic Dopamine Ball</h1>
+
+<!-- ✧ INSTRUCTIONS -->
+<div class="instructions" onclick="this.classList.toggle('active')">
+ℹ️ How to use
+<p>
+Add each task and choose the energy it requires.<br><br>
+
+💤 Low = easy<br>
+⚡ Medium = moderate<br>
+🔥 High = harder<br><br>
+
+Before deciding, set your current energy level.<br><br>
+
+👉 Then follow it. No overthinking.
+</p>
+</div>
 
 <input id="taskInput" placeholder="Add task">
 
@@ -153,14 +189,9 @@ li{
 <option value="high">🔥 High</option>
 </select>
 
-<select id="mode">
-<option value="soft">💗 Soft</option>
-<option value="strict">⚔️ Strict</option>
-<option value="chaotic">🌀 Chaotic</option>
-</select>
-
 <button onclick="addTask()">+ Add</button>
 
+<!-- ✧ BALL -->
 <div class="ball">
   <div class="inner">
     <div id="result">Ask me…</div>
@@ -169,106 +200,76 @@ li{
 
 <button onclick="decide()">✨ Decide</button>
 
-<div class="streak" id="streak">🔥 Streak: 0</div>
-
-</div>
-
-<!-- ✧ drawer -->
+<!-- ✧ TASK DRAWER -->
 <div class="drawer" id="drawer" onclick="toggleDrawer()">
-<div class="handle"></div>
 <ul id="taskList"></ul>
 </div>
 
 <script>
 let tasks = [];
 
-let streak = parseInt(localStorage.getItem("streak")) || 0;
-let lastUsed = localStorage.getItem("lastUsed");
-
-const today = new Date().toDateString();
-
-if(lastUsed !== today){
-  if(lastUsed){
-    const y = new Date();
-    y.setDate(y.getDate()-1);
-    if(lastUsed !== y.toDateString()) streak = 0;
-  }
-}
-
-function saveUsage(){
-  localStorage.setItem("lastUsed", today);
-  localStorage.setItem("streak", streak);
-}
-
 function toggleDrawer(){
-  drawer.classList.toggle("open");
+  document.getElementById("drawer").classList.toggle("open");
 }
 
 function addTask(){
-  const text=taskInput.value;
-  const energy=energy.value;
-  if(text){
-    tasks.push({text,energy});
-    taskInput.value="";
+  const text = document.getElementById("taskInput").value;
+  const energy = document.getElementById("energy").value;
+
+  if(text.trim()){
+    tasks.push({text, energy});
+    document.getElementById("taskInput").value="";
     render();
   }
 }
 
 function render(){
-  taskList.innerHTML="";
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+
   tasks.forEach((t,i)=>{
-    const li=document.createElement("li");
-    li.innerHTML=`${t.text} <button onclick="tasks.splice(${i},1);render()">✕</button>`;
-    taskList.appendChild(li);
+    const li = document.createElement("li");
+    li.innerHTML = `${t.text} <button onclick="deleteTask(${i})">✕</button>`;
+    list.appendChild(li);
   });
+}
+
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
 }
 
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
-  const mode=mode.value;
-  let choice=tasks[Math.floor(Math.random()*tasks.length)].text;
+  const selectedEnergy = document.getElementById("energy").value;
 
-  if(mode==="strict") choice="Do this now: "+choice;
-  if(mode==="chaotic"){
-    const extras=["NOW ⚡","no excuses","go go go"];
-    choice+=" "+extras[Math.floor(Math.random()*extras.length)];
+  let pool = [];
+
+  if(selectedEnergy === "low"){
+    pool = tasks.filter(t => t.energy === "low");
   }
 
-  result.textContent=choice;
-
-  reward();
-}
-
-function reward(){
-  streak++;
-  saveUsage();
-  updateStreak();
-
-  if(navigator.vibrate) navigator.vibrate([50,30,50]);
-
-  particles();
-}
-
-function updateStreak(){
-  streakEl.textContent="🔥 Streak: "+streak;
-}
-
-function particles(){
-  for(let i=0;i<20;i++){
-    const p=document.createElement("div");
-    p.className="particle";
-    p.style.left=Math.random()*window.innerWidth+"px";
-    p.style.top="60%";
-    p.style.background=["#facc15","#a78bfa","#34d399","#f472b6"][Math.floor(Math.random()*4)];
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),1000);
+  if(selectedEnergy === "medium"){
+    pool = tasks.filter(t => t.energy !== "high");
   }
+
+  if(selectedEnergy === "high"){
+    pool = tasks;
+  }
+
+  if(pool.length === 0) pool = tasks;
+
+  const choice = pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById("result").textContent = "👉 " + choice.text;
 }
 
-const streakEl=document.getElementById("streak");
-updateStreak();
 render();
+
+/* ✧ SERVICE WORKER */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
 </script>
 
 </body>
