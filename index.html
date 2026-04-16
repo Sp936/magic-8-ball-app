@@ -370,10 +370,12 @@ function save(){
 
 /* ✧ TASKS */
 function addTask(){
-  const text=taskInput.value;
+  const text = taskInput.value;
+  const energy = energySelect.value;
+
   if(text.trim()){
-    tasks.push({text});
-    taskInput.value="";
+    tasks.push({ text, energy });
+    taskInput.value = "";
     render();
     save();
   }
@@ -397,15 +399,27 @@ function deleteTask(i){
 function decide(){
   if(!tasks.length) return alert("Add tasks");
 
+  const selectedEnergy = energySelect.value;
+
+  const filtered = tasks.filter(t => t.energy === selectedEnergy);
+
+  if(!filtered.length){
+    return alert("No tasks for this energy level");
+  }
+
   ball.classList.add("deciding");
   if(navigator.vibrate) navigator.vibrate(40);
 
   setTimeout(()=>{
-    const index=Math.floor(Math.random()*tasks.length);
-    lastChoiceIndex=index;
-    result.textContent="👉 "+tasks[index].text;
+    const choice = filtered[Math.floor(Math.random()*filtered.length)];
+
+    lastChoiceIndex = tasks.indexOf(choice);
+
+    result.textContent = "👉 " + choice.text;
     ball.classList.remove("deciding");
   },900);
+}
+
 }
 
 /* ✧ COMPLETE */
