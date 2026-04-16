@@ -352,6 +352,10 @@ Tasks will autodelete once they have been chosen and you have clicked 'I did it'
 <script>
 let saveMode = localStorage.getItem("saveMode")==="true";
 let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks"))||[] : [];
+tasks = tasks.map(t => ({
+  text: t.text,
+  energy: t.energy || "low"
+}));
 let streak=parseInt(localStorage.getItem("streak"))||0;
 let lastChoiceIndex=null;
 
