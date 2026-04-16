@@ -356,6 +356,10 @@ tasks = tasks.map(t => ({
   text: t.text,
   energy: t.energy || "low"
 }));
+tasks = tasks.map(t => ({
+  text: t.text,
+  energy: t.energy || energySelect?.value || "low"
+}));
 let streak=parseInt(localStorage.getItem("streak"))||0;
 let lastChoiceIndex=null;
 
@@ -405,8 +409,11 @@ function decide(){
 
   const selectedEnergy = energySelect.value;
 
-  const filtered = tasks.filter(t => t.energy === selectedEnergy);
+  const levels = { low: 1, medium: 2, high: 3 };
 
+const filtered = tasks.filter(t => {
+  return levels[t.energy] <= levels[selectedEnergy];
+});
   if(!filtered.length){
     return alert("No tasks for this energy level");
   }
