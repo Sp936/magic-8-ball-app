@@ -1,4 +1,4 @@
-const CACHE_NAME = "dopamine-ball-v2";
+const CACHE_NAME = "dopamine-ball-v3";
 const urlsToCache = [
   "./",
   "./index.html",
