@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Magic Dopamine Ball ✨</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7c3aed">
+
+  <!-- iOS home-screen install support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Dopamine Ball">
+  <link rel="apple-touch-icon" href="file_00000000eb2c72469b0cd174bf8953a5.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Work Sans', sans-serif;
+  background:#050208;
+  color:#f0e8f7;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* ✧ AMBIENT BACKGROUND */
+.orb{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:0.45;
+  pointer-events:none;
+  z-index:0;
+}
+.orb-1{width:380px;height:380px;background:#3b0764;top:-130px;left:-110px;animation:driftA 16s ease-in-out infinite;}
+.orb-2{width:340px;height:340px;background:#831843;bottom:-120px;right:-100px;animation:driftB 20s ease-in-out infinite;}
+.orb-3{width:260px;height:260px;background:#1e1b4b;top:45%;right:-110px;opacity:0.4;animation:driftC 24s ease-in-out infinite;}
+@keyframes driftA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(50px,70px) scale(1.15);}}
+@keyframes driftB{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-40px,-50px) scale(1.1);}}
+@keyframes driftC{0%,100%{transform:translate(0,0);}50%{transform:translate(-60px,40px);}}
+
+/* ✧ SPARKLES */
+.sparkle{
+  position:fixed;
+  border-radius:50%;
+  background:#fff;
+  pointer-events:none;
+  z-index:1;
+  animation:twinkle linear infinite;
+}
+@keyframes twinkle{
+  0%,100%{opacity:0;transform:scale(0.4);}
+  50%{opacity:0.9;transform:scale(1);}
+}
+
+/* ✧ STRUCTURE */
+.app{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:100vh;
+  padding:20px 0;
+  position:relative;
+  z-index:2;
+}
+
+.top{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  padding-top:10px;
+}
+
+.middle{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex:1;
+  position:relative;
+}
+
+.bottom{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  margin-bottom:130px;
+}
+
+/* ✧ HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:4px;
+}
+
+.header-ball{
+  width:70px;height:70px;
+  border-radius:50%;
+  background: radial-gradient(circle,#000,#111);
+  box-shadow:0 0 40px #7c3aed,0 0 80px #ec4899;
+  display:flex;align-items:center;justify-content:center;
+  animation:headerGlow 4s ease-in-out infinite;
+}
+@keyframes headerGlow{
+  0%,100%{box-shadow:0 0 40px #7c3aed,0 0 80px #ec4899;}
+  50%{box-shadow:0 0 55px #ec4899,0 0 110px #7c3aed;}
+}
+
+.header-core{
+  width:30px;height:30px;
+  border-radius:50%;
+  background:radial-gradient(circle,#c084fc,#6366f1);
+  box-shadow:0 0 25px #c084fc;
+}
+
+h1{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size:1.7rem;
+  margin:0;
+  letter-spacing:0.01em;
+  background:linear-gradient(90deg,#e9d5ff,#f9a8d4,#e9d5ff);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shine 6s linear infinite;
+}
+@keyframes shine{
+  to{background-position:200% center;}
+}
+
+/* ✧ GLASS SURFACES */
+.glass{
+  background:rgba(20,10,30,0.5);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(180,120,220,0.15);
+}
+
+/* ✧ INSTRUCTIONS */
+.instructions{
+  width:85%;max-width:400px;
+  padding:16px;
+  border-radius:16px;
+  cursor:pointer;
+  transition:background 0.2s;
+}
+.instructions:active{background:rgba(255,255,255,0.11);}
+.instructions p{
+  display:none;
+  font-size:0.92rem;
+  line-height:1.5;
+  margin-top:10px;
+}
+.instructions.active p{
+  display:block;
+}
+
+/* ✧ COLLAPSIBLE ADD-TASK SECTION */
+.add-section{
+  width:85%;max-width:400px;
+  border-radius:18px;
+  overflow:hidden;
+  transition:0.25s;
+}
+.add-toggle{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 16px;
+  cursor:pointer;
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size:1rem;
+  color:#e9d5ff;
+}
+.add-chev{
+  transition:transform 0.25s;
+  color:#f472b6;
+  font-size:1.3rem;
+}
+.add-toggle.open .add-chev{transform:rotate(90deg);}
+.add-body{
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  padding:0 16px 16px;
+}
+.add-body.open{display:flex;}
+
+/* ✧ INPUT */
+input,select{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid rgba(180,120,220,0.2);
+  background:rgba(15,8,22,0.6);
+  color:#f0e8f7;
+  font-family:'Work Sans', sans-serif;
+  font-size:0.95rem;
+  transition:box-shadow 0.2s, background 0.2s;
+}
+input:focus,select:focus{
+  outline:none;
+  background:rgba(30,15,40,0.7);
+  box-shadow:0 0 0 2px rgba(236,72,153,0.5);
+}
+.field-label{font-size:0.8rem;opacity:0.65;margin-bottom:-4px;}
+
+/* ✧ BUTTON */
+button{
+  padding:14px;
+  border-radius:12px;
+  border:1px solid rgba(236,72,153,0.45);
+  background:rgba(30,10,40,0.55);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  color:#f3d9f7;
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size:0.95rem;
+  letter-spacing:0.02em;
+  cursor:pointer;
+  transition:transform 0.12s, box-shadow 0.2s, background 0.2s;
+  box-shadow:0 0 22px rgba(124,58,237,0.25);
+}
+button:active{
+  transform:scale(0.95);
+  background:rgba(50,15,60,0.7);
+  box-shadow:0 0 30px rgba(236,73,153,0.4);
+}
+
+.btn-glow{
+  border:1px solid rgba(250,204,21,0.5);
+  box-shadow:0 0 30px rgba(236,73,153,0.35), 0 0 50px rgba(124,58,237,0.2);
+}
+.btn-glow:active{
+  box-shadow:0 0 45px rgba(250,204,21,0.5), 0 0 70px rgba(236,73,153,0.4);
+}
+
+.repeat-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:0.9rem;
+  width:100%;
+}
+.repeat-row input[type="checkbox"]{width:auto;accent-color:#ec4899;}
+
+/* ✧ BALL */
+.ball{
+  width:180px;height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle,#000,#111);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 60px #7c3aed,0 0 140px #ec4899;
+  transition:0.2s;
+  animation:idleBreathe 5s ease-in-out infinite;
+}
+@keyframes idleBreathe{
+  0%,100%{transform:scale(1);box-shadow:0 0 60px #7c3aed,0 0 140px #ec4899;}
+  50%{transform:scale(1.035);box-shadow:0 0 80px #ec4899,0 0 170px #7c3aed;}
+}
+
+/* ✧ CHAOTIC DECIDE */
+.ball.deciding{
+  animation:chaos 0.4s infinite;
+  box-shadow:0 0 130px #ec4899,0 0 220px #7c3aed;
+}
+@keyframes chaos{
+  0%{transform:rotate(0) scale(1);}
+  25%{transform:rotate(10deg) scale(1.07);}
+  50%{transform:rotate(-12deg) scale(1.12);}
+  75%{transform:rotate(8deg) scale(1.07);}
+  100%{transform:rotate(0) scale(1);}
+}
+
+/* ✧ DONE */
+.ball.donePulse{
+  animation:donePulse 0.6s ease;
+}
+@keyframes donePulse{
+  0%{transform:scale(1);}
+  40%{transform:scale(1.28);box-shadow:0 0 160px #facc15,0 0 260px #ec4899;}
+  100%{transform:scale(1);}
+}
+
+.inner{
+  width:100px;height:100px;
+  background:linear-gradient(135deg,#6366f1,#c084fc);
+  transform:rotate(45deg);
+  border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  transition:0.2s;
+}
+
+#result{
+  transform:rotate(-45deg);
+  font-weight:bold;
+  text-align:center;
+  padding:0 8px;
+}
+
+/* ✧ TASKS */
+li{
+  margin:10px auto;
+  max-width:320px;
+  padding:14px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  animation:popIn 0.25s ease;
+}
+@keyframes popIn{
+  from{opacity:0;transform:translateY(6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.task-text{text-align:left;}
+
+.delete-btn{
+  background:rgba(236,72,153,0.25);
+  border:1px solid rgba(236,72,153,0.5);
+  border-radius:8px;
+  padding:6px 10px;
+  box-shadow:none;
+}
+.delete-btn:active{transform:scale(0.9);}
+
+/* ✧ CONFETTI */
+.confetti{
+  position:fixed;
+  width:9px;height:9px;
+  border-radius:3px;
+  animation:fall 1.1s cubic-bezier(0.2,0.8,0.3,1) forwards;
+  z-index:5;
+}
+@keyframes fall{
+  to{
+    transform:translate(var(--x), var(--y)) rotate(720deg);
+    opacity:0;
+  }
+}
+
+/* ✧ STREAK POP */
+.streak{color:#e0a8c8;font-family:'Fraunces', serif;font-weight:600;transition:transform 0.2s;}
+.streak.pop{animation:streakPop 0.4s ease;}
+@keyframes streakPop{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.3);color:#facc15;}
+  100%{transform:scale(1);}
+}
+
+/* ✧ SECTION LABEL (drawer) */
+.section-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:'Fraunces', serif;
+  font-size:0.9rem;
+  font-weight:600;
+  color:#d8b4e2;
+  margin-top:20px;
+  margin-bottom:6px;
+}
+.section-label:first-of-type{margin-top:4px;}
+
+.repeat-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;height:20px;
+  border-radius:50%;
+  background:rgba(88,28,135,0.6);
+  border:1px solid rgba(216,180,226,0.4);
+  font-size:0.75rem;
+  flex-shrink:0;
+}
+
+.divider{
+  width:100%;
+  height:1px;
+  background:rgba(255,255,255,0.1);
+  margin:14px 0 0;
+}
+
+/* ✧ DRAWER */
+.drawer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:rgba(10,5,20,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.1);
+  border-radius:20px 20px 0 0;
+  padding:15px;
+  transform:translateY(calc(100% - 80px));
+  transition:0.3s cubic-bezier(0.2,0.8,0.3,1);
+  z-index:6;
+}
+.drawer.open{transform:translateY(0);}
+
+.handle{
+  width:80px;height:8px;
+  background:linear-gradient(90deg,#7c3aed,#ec4899);
+  margin:0 auto 12px;
+  border-radius:10px;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s;
+  z-index:5;
+}
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* ✧ SAVE */
+.switch{
+  width:40px;height:20px;
+  background:#555;
+  border-radius:20px;
+  margin:10px auto;
+  position:relative;
+  transition:background 0.2s;
+}
+.switch::after{
+  content:"";
+  width:16px;height:16px;
+  background:white;
+  position:absolute;
+  top:2px;left:2px;
+  border-radius:50%;
+  transition:0.2s;
+}
+.switch.active{background:#7c3aed;}
+.switch.active::after{left:22px;}
+
+/* ✧ BODY-DOUBLE SESSION OVERLAY */
+.session-overlay{
+  position:fixed;inset:0;
+  background:rgba(5,2,10,0.92);
+  backdrop-filter:blur(14px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  padding:24px;
+}
+.session-overlay.open{display:flex;}
+.session-card{
+  text-align:center;
+  max-width:340px;
+}
+.session-label{
+  font-family:'Fraunces', serif;
+  color:#d8b4e2;
+  font-size:0.9rem;
+  margin:0 0 6px;
+}
+.session-task{
+  font-family:'Fraunces', serif;
+  font-size:1.3rem;
+  font-weight:600;
+  color:#f0e8f7;
+  margin:0 0 24px;
+}
+.session-timer{
+  font-size:2.2rem;
+  font-weight:600;
+  color:#e0a8c8;
+  margin-bottom:20px;
+  font-variant-numeric:tabular-nums;
+}
+.session-phrase{
+  color:#9E8FAE;
+  font-size:0.95rem;
+  font-style:italic;
+  margin-bottom:30px;
+  min-height:24px;
+}
+.session-actions{display:flex;gap:10px;justify-content:center;}
+</style>
+</head>
+
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div id="sparkleLayer"></div>
+
+<div class="app">
+
+<div class="top">
+
+<div class="header">
+<div class="header-ball"><div class="header-core"></div></div>
+<h1>Magic Dopamine Ball</h1>
+</div>
+
+<div class="instructions glass" onclick="this.classList.toggle('active')">
+<strong>ℹ️ How to use</strong>
+<p>
+
+<strong>1. Add your options</strong><br>
+Anything you could realistically do right now.<br>
+Small tasks = faster wins.
+Assign energy for each task before pressing 'add task' (see below). <br><br>
+
+<strong>2. Assign energy for tasks</strong><br>
+💤 Low → easy<br>
+⚡ Medium → moderate<br>
+🔥 High → harder<br><br>
+
+<strong>3. Match your current energy</strong><br>
+Just above the 'Decide' button is a separate 'Your energy right now' selector — that's the one to update before pressing Decide. Be honest. This is what makes it work.<br><br>
+
+<strong>4. Press Decide</strong><br>
+No overthinking. Let it choose.<br><br>
+
+<strong>5. Act immediately</strong><br>
+The magic is in moving before hesitation.<br><br>
+
+<strong>6. Tap “I did it”</strong><br>
+Lock in the reward. Build your streak 🔥<br><br>
+
+<strong>🧠 Why this works</strong><br>
+Completing small tasks releases dopamine.<br>
+That dopamine makes starting the next task easier.<br>
+Momentum beats motivation — every time.<br><br>
+
+<strong>✨ Rule:</strong><br>
+Don’t question the choice. Just count down from 3 and move.<br><br>
+
+<strong>💾 Save tasks:</strong><br>
+Tasks will autodelete once they have been completed (once they've been selected by the dopamine ball and you have then clicked 'I did it'), unless the 'Save tasks' feature is toggled on. Open the slide-up drawer at the bottom of the screen to view all tasks and manage them. Pressing the ✕ next to a task manually deletes it.
+<br><br>
+<strong>↻ Weekly repeats:</strong><br>
+Tick 'Repeat weekly' when adding a task and pick a day — that task will automatically reappear on the same day every week, whether or not 'Save tasks' is switched on. Manage or remove weekly repeats from the slide-up drawer.
+</p>
+</div>
+
+<div id="dopamineHint" style="opacity:0.75;font-size:0.9rem;"></div>
+
+<div class="add-section glass">
+  <div class="add-toggle" id="addToggle" onclick="toggleAddSection()">
+    <span>➕ Add a task</span>
+    <span class="add-chev">›</span>
+  </div>
+  <div class="add-body" id="addBody">
+
+    <input id="taskInput" placeholder="Add task">
+
+    <div>
+      <div class="field-label">Energy this task needs</div>
+      <select id="energySelect">
+      <option value="low">💤 Low</option>
+      <option value="medium">⚡ Medium</option>
+      <option value="high">🔥 High</option>
+      </select>
+    </div>
+
+    <label class="repeat-row">
+    <input type="checkbox" id="repeatCheckbox" onchange="toggleRepeatDay()">
+    ↻ Repeat weekly
+    </label>
+
+    <select id="repeatDaySelect" style="display:none;">
+    <option value="Monday">Monday</option>
+    <option value="Tuesday">Tuesday</option>
+    <option value="Wednesday">Wednesday</option>
+    <option value="Thursday">Thursday</option>
+    <option value="Friday">Friday</option>
+    <option value="Saturday">Saturday</option>
+    <option value="Sunday">Sunday</option>
+    </select>
+
+    <button onclick="addTask()">+ Add</button>
+
+  </div>
+</div>
+
+</div>
+
+<div class="middle">
+<div class="ball" id="ball">
+<div class="inner">
+<div id="result">Ask me…</div>
+</div>
+</div>
+</div>
+
+<div class="bottom">
+<label style="font-size:0.85rem;font-family:'Fraunces', serif;font-weight:600;color:#e0a8c8;">⚡ Your energy right now</label>
+<select id="currentEnergySelect" style="width:85%;max-width:400px;border:1px solid rgba(224,168,200,0.5);">
+<option value="low">💤 Low</option>
+<option value="medium">⚡ Medium</option>
+<option value="high">🔥 High</option>
+</select>
+<button class="btn-glow" onclick="decide()">✨ Decide</button>
+<button onclick="startSession()" style="border-color:rgba(108,123,217,0.5);">🧑‍🤝‍🧑 Sit with me while I do it</button>
+<button class="btn-glow" onclick="completeTask()">✅ I did it</button>
+<div class="streak" id="streak">🔥 Streak: 0</div>
+</div>
+
+</div>
+
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+<div class="session-overlay" id="session-overlay">
+  <div class="session-card">
+    <p class="session-label">Sitting with you</p>
+    <p class="session-task" id="session-task"></p>
+    <div class="session-timer" id="session-timer">0:00</div>
+    <p class="session-phrase" id="session-phrase"></p>
+    <div class="session-actions">
+      <button onclick="sessionDone()">✅ Done</button>
+      <button onclick="closeSession()" style="opacity:0.7;">End session</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer" id="drawer">
+<div class="handle" onclick="openDrawer()"></div>
+
+<div>💾 Save tasks</div>
+<div id="switch" class="switch" onclick="toggleSave()"></div>
+
+<div class="divider"></div>
+
+<div class="section-label"><span class="repeat-badge">↻</span> Weekly tasks</div>
+<ul id="recurringList"></ul>
+
+<div class="section-label">📋 All tasks</div>
+<ul id="taskList"></ul>
+</div>
+
+<script>
+let saveMode = localStorage.getItem("saveMode")==="true";
+let tasks = saveMode ? JSON.parse(localStorage.getItem("tasks"))||[] : [];
+tasks = tasks.map(t => ({
+  text: t.text,
+  energy: t.energy || "low"
+}));
+tasks = tasks.map(t => ({
+  text: t.text,
+  energy: t.energy || energySelect?.value || "low"
+}));
+let streak=parseInt(localStorage.getItem("streak"))||0;
+let lastChoiceIndex=null;
+
+/* ✧ ADD SECTION TOGGLE */
+function toggleAddSection(){
+  addToggle.classList.toggle("open");
+  addBody.classList.toggle("open");
+}
+
+/* ✧ RECURRING TASKS */
+let recurringTasks = JSON.parse(localStorage.getItem("recurringTasks")) || [];
+let lastInjected = JSON.parse(localStorage.getItem("lastInjected")) || {};
+
+function toggleRepeatDay(){
+  repeatDaySelect.style.display = repeatCheckbox.checked ? "block" : "none";
+}
+
+function saveRecurring(){
+  localStorage.setItem("recurringTasks", JSON.stringify(recurringTasks));
+  localStorage.setItem("lastInjected", JSON.stringify(lastInjected));
+}
+
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+function todayDayName(){
+  return new Date().toLocaleDateString('en-US', { weekday: 'long' });
+}
+
+function renderRecurring(){
+  recurringList.innerHTML = "";
+  recurringTasks.forEach((r) => {
+    const li = document.createElement("li");
+    li.className = "glass";
+    li.innerHTML = `<span class="task-text">${r.day} — ${r.text}</span>
+    <button class="delete-btn" onclick="deleteRecurring(${r.id})">✕</button>`;
+    recurringList.appendChild(li);
+  });
+}
+
+function deleteRecurring(id){
+  recurringTasks = recurringTasks.filter(r => r.id !== id);
+  delete lastInjected[id];
+  saveRecurring();
+  renderRecurring();
+}
+
+function injectRecurringTasks(){
+  const today = todayDayName();
+  const key = todayKey();
+  recurringTasks.forEach(r => {
+    if(r.day !== today) return;
+    if(lastInjected[r.id] === key) return;
+    const alreadyThere = tasks.some(t => t.fromRecurring === r.id);
+    lastInjected[r.id] = key;
+    if(!alreadyThere){
+      tasks.push({ text: r.text, energy: r.energy, fromRecurring: r.id });
+    }
+  });
+  saveRecurring();
+}
+
+/* ✧ SAVE */
+function toggleSave(){
+  saveMode=!saveMode;
+  switchEl.classList.toggle("active",saveMode);
+  localStorage.setItem("saveMode",saveMode);
+  save();
+}
+function save(){
+  if(saveMode){
+    localStorage.setItem("tasks",JSON.stringify(tasks));
+  }
+}
+
+/* ✧ TASKS */
+function addTask(){
+  const text = taskInput.value;
+  const energy = energySelect.value;
+
+  if(!text.trim()) return;
+
+  if(repeatCheckbox.checked){
+    const day = repeatDaySelect.value;
+    const id = Date.now();
+    recurringTasks.push({ id, text, energy, day });
+    lastInjected[id] = todayKey();
+    saveRecurring();
+    renderRecurring();
+    tasks.push({ text, energy, fromRecurring: id });
+    repeatCheckbox.checked = false;
+    toggleRepeatDay();
+  } else {
+    tasks.push({ text, energy });
+  }
+
+  taskInput.value = "";
+  render();
+  save();
+}
+function render(){
+  taskList.innerHTML="";
+  tasks.forEach((t,i)=>{
+    const li=document.createElement("li");
+    li.className = "glass";
+    li.innerHTML=`<span class="task-text">${t.text}</span>
+    <button class="delete-btn" onclick="deleteTask(${i})">✕</button>`;
+    taskList.appendChild(li);
+  });
+}
+function deleteTask(i){
+  tasks.splice(i,1);
+  render();
+  save();
+}
+
+/* ✧ DECIDE */
+function decide(){
+  if(!tasks.length) return alert("Add tasks");
+
+  const selectedEnergy = currentEnergySelect.value;
+
+  const levels = { low: 1, medium: 2, high: 3 };
+
+const filtered = tasks.filter(t => {
+  return levels[t.energy] <= levels[selectedEnergy];
+});
+  if(!filtered.length){
+    return alert("No tasks for this energy level");
+  }
+
+  ball.classList.add("deciding");
+  if(navigator.vibrate) navigator.vibrate(40);
+
+  setTimeout(()=>{
+    const choice = filtered[Math.floor(Math.random()*filtered.length)];
+
+    lastChoiceIndex = tasks.indexOf(choice);
+
+    result.textContent = "👉 " + choice.text;
+    ball.classList.remove("deciding");
+  },900);
+}
+
+
+/* ✧ COMPLETE */
+function completeTask(){
+  if(lastChoiceIndex!==null){
+    if(!saveMode){
+      tasks.splice(lastChoiceIndex,1);
+    }
+    lastChoiceIndex=null;
+    render();
+    save();
+  }
+  closeSession();
+
+  streak++;
+  localStorage.setItem("streak",streak);
+  streakEl.textContent="🔥 Streak: "+streak;
+  streakEl.classList.remove("pop");
+  void streakEl.offsetWidth;
+  streakEl.classList.add("pop");
+
+  const isJackpot = Math.random() < 0.18;
+  const rewards=["✨ DONE ✨","🔥 NICE 🔥","⚡ LET’S GO ⚡","💥 YOU DID IT 💥"];
+  const jackpotRewards=["🌟 JACKPOT MOMENTUM 🌟","💫 UNSTOPPABLE 💫","🎉 ON FIRE 🎉"];
+
+  result.textContent = isJackpot
+    ? jackpotRewards[Math.floor(Math.random()*jackpotRewards.length)]
+    : rewards[Math.floor(Math.random()*rewards.length)];
+
+  ball.classList.add("donePulse");
+  confetti(isJackpot);
+
+  if(navigator.vibrate) navigator.vibrate(isJackpot ? [40,20,40,20,80] : [50,30,80]);
+
+  setTimeout(()=>{
+    ball.classList.remove("donePulse");
+    result.textContent="Ask me…";
+  },1000);
+}
+
+/* ✧ CONFETTI */
+function confetti(big){
+  const count = big ? 90 : 40;
+  const spread = big ? 640 : 440;
+  for(let i=0;i<count;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.setProperty('--x',(Math.random()-0.5)*spread+"px");
+    c.style.setProperty('--y',(Math.random()-0.5)*(spread*1.3)+"px");
+    c.style.left=window.innerWidth/2+"px";
+    c.style.top="55%";
+    c.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
+    c.style.background=["#f472b6","#34d399","#facc15","#a78bfa","#60a5fa"][Math.floor(Math.random()*5)];
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1100);
+  }
+}
+
+/* ✧ BODY-DOUBLE SESSION */
+let sessionInterval;
+let sessionSeconds = 0;
+const sessionPhrases = [
+  "Still with you.",
+  "No rush, just keep going.",
+  "You don't have to do this perfectly.",
+  "One small motion is enough.",
+  "I'm here while you do this."
+];
+function startSession(){
+  if(lastChoiceIndex === null) return alert("Decide on a task first.");
+  sessionSeconds = 0;
+  document.getElementById('session-task').textContent = tasks[lastChoiceIndex] ? tasks[lastChoiceIndex].text : result.textContent.replace('👉 ','');
+  document.getElementById('session-overlay').classList.add('open');
+  cycleSessionPhrase();
+  sessionInterval = setInterval(() => {
+    sessionSeconds++;
+    const m = Math.floor(sessionSeconds/60);
+    const s = sessionSeconds%60;
+    document.getElementById('session-timer').textContent = m + ':' + (s<10?'0':'')+s;
+  }, 1000);
+}
+function cycleSessionPhrase(){
+  document.getElementById('session-phrase').textContent = sessionPhrases[Math.floor(Math.random()*sessionPhrases.length)];
+  if(document.getElementById('session-overlay').classList.contains('open')){
+    setTimeout(cycleSessionPhrase, 22000);
+  }
+}
+function closeSession(){
+  clearInterval(sessionInterval);
+  document.getElementById('session-overlay').classList.remove('open');
+}
+function sessionDone(){
+  closeSession();
+  completeTask();
+}
+
+/* ✧ SPARKLES (ambient) */
+function spawnSparkles(){
+  const layer = document.getElementById("sparkleLayer");
+  for(let i=0;i<18;i++){
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    const size = Math.random()*3+1;
+    s.style.width = size+"px";
+    s.style.height = size+"px";
+    s.style.left = Math.random()*100+"vw";
+    s.style.top = Math.random()*100+"vh";
+    s.style.animationDuration = (Math.random()*4+3)+"s";
+    s.style.animationDelay = (Math.random()*4)+"s";
+    layer.appendChild(s);
+  }
+}
+
+/* ✧ DRAWER */
+function openDrawer(){
+  drawer.classList.add("open");
+  overlay.classList.add("active");
+}
+function closeDrawer(){
+  drawer.classList.remove("open");
+  overlay.classList.remove("active");
+}
+
+/* ✧ DOPAMINE HINTS */
+const hints=[
+"Small wins rewire your brain.",
+"Action creates clarity.",
+"Done is better than perfect.",
+"Start tiny. Momentum builds.",
+"You don’t need motivation — just motion."
+];
+
+setInterval(()=>{
+  dopamineHint.textContent="✧ "+hints[Math.floor(Math.random()*hints.length)];
+},4000);
+
+/* ✧ INIT */
+const drawer=document.getElementById("drawer");
+const overlay=document.getElementById("overlay");
+const taskList=document.getElementById("taskList");
+const taskInput=document.getElementById("taskInput");
+const result=document.getElementById("result");
+const ball=document.getElementById("ball");
+const streakEl=document.getElementById("streak");
+const switchEl=document.getElementById("switch");
+const dopamineHint=document.getElementById("dopamineHint");
+const repeatCheckbox=document.getElementById("repeatCheckbox");
+const repeatDaySelect=document.getElementById("repeatDaySelect");
+const recurringList=document.getElementById("recurringList");
+const addToggle=document.getElementById("addToggle");
+const addBody=document.getElementById("addBody");
+
+switchEl.classList.toggle("active",saveMode);
+injectRecurringTasks();
+renderRecurring();
+render();
+streakEl.textContent="🔥 Streak: "+streak;
+spawnSparkles();
+
+if(tasks.length === 0){
+  toggleAddSection();
+}
+
+/* ✧ PWA */
+if ("serviceWorker" in navigator){
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>
